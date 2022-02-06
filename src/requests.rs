@@ -2,12 +2,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct AudioPlayRequest { 
-    request_type: String,
-    audio_file_path: String,
-    push_to_top: bool,
-    title: String,
-    author: String,
-    playlist_id: i32
+    pub request_type: String,
+    pub audio_file_path: String,
+    pub push_to_top: bool,
+    pub title: String,
+    pub author: String,
+    pub playlist_id: i32
 }
 
 
