@@ -13,7 +13,7 @@ fn main() {
     println!("Loading env_logger");
     // configure the logger
     let env = Env::default()
-        .filter_or("RAPD_LOG_LEVEL", "verbose")
+        .filter_or("RAPD_LOG_LEVEL", "debug")
         .write_style_or("RAPD_LOG_STYLE", "always");
     // build the logger
     init_from_env(env);

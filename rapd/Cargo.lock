@@ -129,10 +129,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rapc"
-version = "0.1.0"
-
-[[package]]
 name = "rapd"
 version = "0.1.0"
 dependencies = [
