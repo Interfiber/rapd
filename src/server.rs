@@ -34,6 +34,7 @@ fn handle_client(stream: TcpStream) {
                     }
                     _ => {
                         warn!("Rejecting request: request type invalid");
+                        stream.get_ref().write(requests::get_request_rejected_string("Invalid request type").as_bytes()).expect("Failed to write to socket");
                         break;
                     }
                 }
