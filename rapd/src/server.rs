@@ -5,6 +5,7 @@ use std::thread;
 use crate::requests::AudioPlayRequest;
 use crate::json::parse_json_audio_play;
 use crate::player::play_audio_from_request;
+use crate::player::stop_player;
 use std::net::{TcpListener, TcpStream};
 use crate::json::parse_json_raw;
 
@@ -29,7 +30,12 @@ fn handle_client(stream: TcpStream) {
                     "play_audio_file" => {
                         let audio_req: AudioPlayRequest = parse_json_audio_play(json.to_string());
                         play_audio_from_request(audio_req);
-                        stream.get_ref().write(requests::get_request_ok_string("Playing audio file").as_bytes()).expect("Failed to write to socket");
+                        stream.get_ref().write(requests::get_request_ok_string("Attempting audio playback").as_bytes()).expect("Failed to write to socket");
+                        break;
+                    },
+                    "stop_player" => {
+                        stop_player();
+                        stream.get_ref().write(requests::get_request_ok_string("Sent stop request to player").as_bytes()).expect("Failed to write to socket");
                         break;
                     }
                     _ => {
