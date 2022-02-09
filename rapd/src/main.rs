@@ -3,6 +3,8 @@ mod state;
 mod config;
 mod requests;
 mod db;
+mod enums;
+mod utils;
 mod server;
 mod json;
 #[macro_use]

@@ -15,7 +15,7 @@ pub fn db_exists() -> bool {
     }
 }
 pub fn create_db(){
-    info!("Creating rapd database");
+    info!("Creating rapd database and config files");
     let xdg_dirs = xdg::BaseDirectories::with_prefix("rapd").unwrap();
     let db_path = xdg_dirs.place_data_file("db.json").expect("Failed to place database file");
     let state_path = xdg_dirs.place_data_file("state.json").expect("Failed to place state file");
@@ -27,5 +27,5 @@ pub fn create_db(){
     File::create(db_path).expect("Failed to write to db_file");
     File::create(config_path).expect("Failed to write to config_file");
     File::create(state_path).expect("Failed to create state file");
-    info!("Created database");
+    info!("Created database and config files");
 }

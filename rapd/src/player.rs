@@ -1,6 +1,8 @@
 use soloud::*;
 use std::thread::Builder;
 use std::path::Path;
+use crate::enums::AudioStartStatus;
+use crate::utils::file_exists;
 use crate::requests::AudioPlayRequest;
 
 pub fn play_audio_file(file: &str) {
@@ -22,14 +24,20 @@ pub fn play_audio_file(file: &str) {
     info!("Audio playback completed for file: {}", file);
 }
 
-pub fn play_audio_from_request(request: AudioPlayRequest) {
+pub fn play_audio_from_request(request: AudioPlayRequest) -> AudioStartStatus {
     info!("Spawning audio thread...");    
+    if !file_exists(request.audio_file_path.clone()) {
+       error!("Attempted to play a nonexistent audio file at path: {}", request.audio_file_path);
+       return AudioStartStatus::FSError;
+    }
     match Builder::new().name("player".to_string()).spawn(move || play_audio_file(&request.audio_file_path)){
         Ok(_) => {
             info!("Spawned audio thread");
+            return AudioStartStatus::Success;
         },
         Err(err) => {
             error!("Failed to spawn audio thread: {}", err);
+            return AudioStartStatus::ThreadingError;
         }
     }
 }

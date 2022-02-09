@@ -6,5 +6,6 @@ pub struct StateFile {
 }
 
 pub fn set_state(state: String){
+    info!("Setting state to: {}", state);
 
 }
