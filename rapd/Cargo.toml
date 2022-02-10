@@ -18,3 +18,4 @@ serde = { version = "1.0.136", features = ["derive"] }
 toml = "0.5.8"
 # other
 xdg = "2.4.0"
+ctrlc = "3.2.1"

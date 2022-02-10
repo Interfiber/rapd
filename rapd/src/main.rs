@@ -1,3 +1,4 @@
+// modules
 mod player;
 mod state;
 mod config;
@@ -7,6 +8,7 @@ mod enums;
 mod utils;
 mod server;
 mod json;
+// imports
 #[macro_use]
 extern crate log;
 
@@ -14,6 +16,7 @@ extern crate log;
 extern crate serde_json;
 
 use env_logger::*;
+
 fn main() {
     println!("Loading env_logger");
     // configure the logger
@@ -26,6 +29,13 @@ fn main() {
         db::create_db();
     }
     info!("Started env_logger");
+    info!("Creating ctrlc hooks...");
+    ctrlc::set_handler(move || {
+        warn!("Shutting down, flushing state file");
+        state::flush();
+        info!("Exiting");
+        std::process::exit(1);
+    }).expect("Error setting Ctrl-C handler");
     info!("Starting server");
     server::start_server();
 }

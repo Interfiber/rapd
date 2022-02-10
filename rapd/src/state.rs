@@ -14,6 +14,13 @@ pub fn get_state_path() -> String {
     return data_path.into_os_string().into_string().expect("Failed to convert to string");
 }
 
+pub fn flush() {
+    info!("Flushing statefile");
+    let state_path = get_state_path();
+    std::fs::write(state_path, "").expect("Failed to flush state");
+    info!("Flushed statefile");
+}
+
 pub fn get_state() -> PlayerState {
     let state_path = get_state_path();
     let state_string = std::fs::read_to_string(state_path).expect("Failed to read from statefile");
