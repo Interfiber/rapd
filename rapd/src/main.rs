@@ -33,6 +33,7 @@ fn main() {
     ctrlc::set_handler(move || {
         warn!("Shutting down, flushing state file");
         state::flush();
+        state::set_state(enums::PlayerState::Killed);
         info!("Exiting");
         std::process::exit(1);
     }).expect("Error setting Ctrl-C handler");

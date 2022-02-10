@@ -10,4 +10,5 @@ pub enum AudioStartStatus {
 pub enum PlayerState {
     Playing,   // Playing an audio file
     Idle,     // The player is doing nothing, or idling
+    Killed,    // The player has been killed, or is shutdown
 }

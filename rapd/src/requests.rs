@@ -5,10 +5,7 @@ use crate::enums::*;
 pub struct AudioPlayRequest { 
     pub request_type: String,
     pub audio_file_path: String,
-    pub push_to_top: bool,
-    pub title: String,
-    pub author: String,
-    pub playlist_id: i32
+    pub loop_audio: bool
 }
 
 

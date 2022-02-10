@@ -8,7 +8,7 @@ use crate::state::get_state;
 use crate::utils::file_exists;
 use crate::requests::AudioPlayRequest;
 
-pub fn play_audio_file(file: &str) {
+pub fn play_audio_file(file: &str, loop_audio: bool) {
     // check if we already have an audio file playing
     if get_state() == PlayerState::Playing {
         warn!("Not playing audio file, audio playback already in progress!");
@@ -18,6 +18,8 @@ pub fn play_audio_file(file: &str) {
     let mut wav = audio::Wav::default();
     info!("Loading audio data into memory");
     wav.load(&std::path::Path::new(file)).expect("Failed to load audio data into memory");
+    info!("Looping audio: {}", loop_audio);
+    wav.set_looping(loop_audio);
     info!("Starting audio playback for file: {}", file);
     sl.play(&wav);
     set_state(PlayerState::Playing);
@@ -39,7 +41,7 @@ pub fn play_audio_from_request(request: AudioPlayRequest) -> AudioStartStatus {
        error!("Attempted to play a nonexistent audio file at path: {}", request.audio_file_path);
        return AudioStartStatus::FSError;
     }
-    match Builder::new().name("player".to_string()).spawn(move || play_audio_file(&request.audio_file_path)){
+    match Builder::new().name("player".to_string()).spawn(move || play_audio_file(&request.audio_file_path, request.loop_audio)){
         Ok(_) => {
             info!("Spawned audio thread");
             return AudioStartStatus::Success;

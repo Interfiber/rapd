@@ -1,12 +1,45 @@
-use serde::{Deserialize, Serialize};
 use std::io::Write;
 use crate::enums::PlayerState;
 
-#[derive(Serialize, Deserialize)]
-pub struct StateFile {
-    pub state: String
+// convert a statestring(example: playerstate.idle) to a PlayerState
+pub fn state_string_to_state(state_string: String) -> Option<PlayerState> {
+   match state_string.as_str() {
+        "playerstate.playing" => {
+            return Some(PlayerState::Playing);
+         },
+         "playerstate.idle" => {
+            return Some(PlayerState::Idle);
+         },
+         "playerstate.killed" => {
+            return Some(PlayerState::Killed);
+         },
+         _ => {
+            error!("statefile is empty, or corrupted!");
+            return None;
+        }
+   }
 }
 
+// convert a PlayerState to a state string(example: playerstate.idle)
+pub fn state_to_string(state: PlayerState) -> String {
+   match state {
+        PlayerState::Idle => {
+            debug!("State match is: playerstate.idle");
+            return String::from("playerstate.idle");
+        },
+        PlayerState::Playing => {
+            debug!("State match is: playerstate.playing");
+            return String::from("playerstate.playing");
+        },
+        PlayerState::Killed => {
+            debug!("State match is: playerstate.killed");
+            return String::from("playerstate.killed");
+        }
+   } 
+}
+
+
+// Return the path to the statefile
 pub fn get_state_path() -> String {
     let xdg_dirs = xdg::BaseDirectories::with_prefix("rapd").unwrap();
     let mut data_path = xdg_dirs.get_data_home();
@@ -14,46 +47,29 @@ pub fn get_state_path() -> String {
     return data_path.into_os_string().into_string().expect("Failed to convert to string");
 }
 
+// flush the player statefile
 pub fn flush() {
     info!("Flushing statefile");
     let state_path = get_state_path();
-    std::fs::write(state_path, "").expect("Failed to flush state");
+    let idle_state = state_to_string(PlayerState::Idle);
+    std::fs::write(state_path, idle_state).expect("Failed to flush state");
     info!("Flushed statefile");
 }
 
+// get the current player state
 pub fn get_state() -> PlayerState {
     let state_path = get_state_path();
     let state_string = std::fs::read_to_string(state_path).expect("Failed to read from statefile");
-    match state_string.as_str() {
-        "playerstate.playing" => {
-            return PlayerState::Playing;
-        },
-        "playerstate.idle" => {
-            return PlayerState::Idle;
-        },
-        _ => {
-            warn!("State file is empty, or corrupted using default value of idle");
-            return PlayerState::Idle;
-        }
-    }
+    let state = state_string_to_state(state_string).unwrap();
+    return state;
 }
 
+// set the player state
 pub fn set_state(state: PlayerState){
     info!("Setting state...");
     let state_path = get_state_path();
-    let mut state_string = "";
-    debug!("Compiler warning removal line: {}", state_string);
+    let state_string = state_to_string(state);
     // switch the state 
-    match state {
-        PlayerState::Idle => {
-            debug!("State match is: playerstate.idle");
-            state_string = "playerstate.idle"
-        },
-        PlayerState::Playing => {
-            debug!("State match is: playerstate.playing");
-            state_string = "playerstate.playing";
-        }
-    }
     let mut state_file = std::fs::OpenOptions::new().write(true).open(state_path).expect("Failed to open state file");
     match state_file.write_all(state_string.as_bytes()){
         Ok(_) => debug!("Wrote state"),
@@ -62,7 +78,7 @@ pub fn set_state(state: PlayerState){
             error!("Error log: {}", err)
         }
     }
-    // flush the state file
+    // write to disk
     match state_file.flush() {
         Ok(_) => info!("Set state"),
         Err(err) => {
