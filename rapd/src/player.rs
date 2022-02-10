@@ -23,16 +23,21 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
     info!("Starting audio playback for file: {}", file);
     sl.play(&wav);
     set_state(PlayerState::Playing);
+    let mut tick_since_state_recheck = 0;
     while sl.voice_count() > 0 {
-        if Path::new("/tmp/rapd.stop_player_thread").exists() {
-            info!("File rapd.stop_player_thread exists, shutting down player thread");
-            std::fs::remove_file("/tmp/rapd.stop_player_thread").unwrap();
-            break;
+        tick_since_state_recheck += 1;
+        if tick_since_state_recheck >= 3 {
+            // re-evaluate the player state
+            if get_state() == PlayerState::Stop {
+                info!("Got stop request in statefile, stopping player");
+                break;
+            }
+            tick_since_state_recheck = 0;
         }
         std::thread::sleep(std::time::Duration::from_millis(100));
     }
-    set_state(PlayerState::Idle);
     info!("Audio playback completed for file: {}", file);
+    set_state(PlayerState::Idle);
 }
 
 pub fn play_audio_from_request(request: AudioPlayRequest) -> AudioStartStatus {
@@ -54,13 +59,5 @@ pub fn play_audio_from_request(request: AudioPlayRequest) -> AudioStartStatus {
 }
 pub fn stop_player() {
     warn!("Stopping player on request");
-    // NOTE: The code inside the play_audio_file function every few milliseconds checks if a file
-    // named rapd.stop_player_thread exists, if it does it deletes it and closes the player thread
-    // with a break statement
-    match std::fs::write("/tmp/rapd.stop_player_thread", ""){
-        Ok(_) => info!("Stop file created"),
-        Err(err) => {
-            error!("Failed to create stop file: {}", err)
-        }
-    }
+    set_state(PlayerState::Stop);
 }

@@ -8,7 +8,8 @@ pub enum AudioStartStatus {
 // State of the audio player
 #[derive(PartialEq)]
 pub enum PlayerState {
-    Playing,   // Playing an audio file
-    Idle,     // The player is doing nothing, or idling
-    Killed,    // The player has been killed, or is shutdown
+    Playing,      // Playing an audio file
+    Idle,        // The player is doing nothing, or idling
+    Killed,     // The player has been killed, or is shutdown
+    Stop,      // The player is stopping the audio, and will change to a idle state when done
 }

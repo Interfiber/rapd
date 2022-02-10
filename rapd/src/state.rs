@@ -13,6 +13,9 @@ pub fn state_string_to_state(state_string: String) -> Option<PlayerState> {
          "playerstate.killed" => {
             return Some(PlayerState::Killed);
          },
+         "playerstate.stop" => {
+             return Some(PlayerState::Stop);
+         }
          _ => {
             error!("statefile is empty, or corrupted!");
             return None;
@@ -34,6 +37,10 @@ pub fn state_to_string(state: PlayerState) -> String {
         PlayerState::Killed => {
             debug!("State match is: playerstate.killed");
             return String::from("playerstate.killed");
+        },
+        PlayerState::Stop => {
+            debug!("State match is playerstate.stop");
+            return String::from("playerstate.stop");
         }
    } 
 }
@@ -45,15 +52,6 @@ pub fn get_state_path() -> String {
     let mut data_path = xdg_dirs.get_data_home();
     data_path.push("statefile");
     return data_path.into_os_string().into_string().expect("Failed to convert to string");
-}
-
-// flush the player statefile
-pub fn flush() {
-    info!("Flushing statefile");
-    let state_path = get_state_path();
-    let idle_state = state_to_string(PlayerState::Idle);
-    std::fs::write(state_path, idle_state).expect("Failed to flush state");
-    info!("Flushed statefile");
 }
 
 // get the current player state
@@ -70,7 +68,7 @@ pub fn set_state(state: PlayerState){
     let state_path = get_state_path();
     let state_string = state_to_string(state);
     // switch the state 
-    let mut state_file = std::fs::OpenOptions::new().write(true).open(state_path).expect("Failed to open state file");
+    let mut state_file = std::fs::OpenOptions::new().write(true).truncate(true).open(state_path).expect("Failed to open state file");
     match state_file.write_all(state_string.as_bytes()){
         Ok(_) => debug!("Wrote state"),
         Err(err) => {
