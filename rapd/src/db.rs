@@ -1,8 +1,4 @@
 use std::fs::File;
-use std::path::Path;
-
-pub fn set_state(){
-}
 
 pub fn db_exists() -> bool {
     let xdg_dirs = xdg::BaseDirectories::with_prefix("rapd").unwrap();
@@ -18,7 +14,7 @@ pub fn create_db(){
     info!("Creating rapd database and config files");
     let xdg_dirs = xdg::BaseDirectories::with_prefix("rapd").unwrap();
     let db_path = xdg_dirs.place_data_file("db.json").expect("Failed to place database file");
-    let state_path = xdg_dirs.place_data_file("state.json").expect("Failed to place state file");
+    let state_path = xdg_dirs.place_data_file("statefile").expect("Failed to place state file");
     let config_path = xdg_dirs.place_config_file("config.toml").expect("Failed to place config file");
     info!("Database path: {}", db_path.as_path().display());
     info!("Config path: {}", config_path.as_path().display());

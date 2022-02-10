@@ -2,17 +2,25 @@ use soloud::*;
 use std::thread::Builder;
 use std::path::Path;
 use crate::enums::AudioStartStatus;
+use crate::enums::PlayerState;
+use crate::state::set_state;
+use crate::state::get_state;
 use crate::utils::file_exists;
 use crate::requests::AudioPlayRequest;
 
 pub fn play_audio_file(file: &str) {
     // check if we already have an audio file playing
+    if get_state() == PlayerState::Playing {
+        warn!("Not playing audio file, audio playback already in progress!");
+        return;
+    }
     let sl = Soloud::default().unwrap();
     let mut wav = audio::Wav::default();
     info!("Loading audio data into memory");
     wav.load(&std::path::Path::new(file)).expect("Failed to load audio data into memory");
     info!("Starting audio playback for file: {}", file);
     sl.play(&wav);
+    set_state(PlayerState::Playing);
     while sl.voice_count() > 0 {
         if Path::new("/tmp/rapd.stop_player_thread").exists() {
             info!("File rapd.stop_player_thread exists, shutting down player thread");
@@ -21,6 +29,7 @@ pub fn play_audio_file(file: &str) {
         }
         std::thread::sleep(std::time::Duration::from_millis(100));
     }
+    set_state(PlayerState::Idle);
     info!("Audio playback completed for file: {}", file);
 }
 
