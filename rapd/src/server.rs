@@ -10,6 +10,16 @@ use crate::player::stop_player;
 use std::net::{TcpListener, TcpStream};
 use crate::json::parse_json_raw;
 
+fn write_to_stream(stream: BufReader<TcpStream>, message: String){
+    // write the message to the tcp stream
+    match stream.get_ref().write(message.as_bytes()){
+        Ok(_) => {},
+        Err(err) => {
+            error!("Failed to write data to TcpStream: {}", message);
+            error!("Error log: {}", err);
+        }
+    }
+}
 fn handle_client(stream: TcpStream) {
     let mut stream = BufReader::new(stream);
     loop {
@@ -23,7 +33,7 @@ fn handle_client(stream: TcpStream) {
             // check if we have a request type
             if json["request_type"] == serde_json::Value::Null {
                 warn!("Rejecting request: no request_type given in request");
-                stream.get_ref().write(requests::get_request_rejected_string("Request type not given").as_bytes()).expect("Failed to write to socket");
+                write_to_stream(stream, requests::get_request_rejected_string("Request type not given"));
                 break;
             } else {
                 // match/switch the request type
@@ -32,17 +42,17 @@ fn handle_client(stream: TcpStream) {
                         let audio_req: AudioPlayRequest = parse_json_audio_play(json.to_string());
                         let status = play_audio_from_request(audio_req);
                         let request_string = audio_play_status_request_string(status);
-                        stream.get_ref().write(request_string.as_bytes()).expect("Failed to write to socket");
+                        write_to_stream(stream, request_string);
                         break;
                     },
                     "stop_player" => {
                         stop_player();
-                        stream.get_ref().write(requests::get_request_ok_string("Sent stop request to player").as_bytes()).expect("Failed to write to socket");
+                        write_to_stream(stream, requests::get_request_ok_string("Sent stop request to player"));
                         break;
                     }
                     _ => {
                         warn!("Rejecting request: request type invalid");
-                        stream.get_ref().write(requests::get_request_rejected_string("Invalid request type").as_bytes()).expect("Failed to write to socket");
+                        write_to_stream(stream, requests::get_request_rejected_string("Invalid request type"));
                         break;
                     }
                 }
