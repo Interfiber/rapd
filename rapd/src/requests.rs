@@ -45,3 +45,36 @@ pub fn audio_play_status_request_string(result: AudioStartStatus) -> String {
         }
     }
 }
+
+pub fn db_rebuild_status_request_string(result: MusicDatabaseRebuildState) -> String {
+    match result {
+        MusicDatabaseRebuildState::ConfigError => {
+            return json!({
+                "request_type": "Failed",
+                "error": true,
+                "message": "Failed to rebuild the database due to a config error"
+            }).to_string();
+        },
+        MusicDatabaseRebuildState::DatabaseWriteError => {
+            return json!({
+                "request_type": "Failed",
+                "error": true,
+                "message": "The database was rebuilt but was unable to be written to disk"
+            }).to_string();
+        },
+        MusicDatabaseRebuildState::FSError => {
+            return json!({
+                "request_type": "Failed",
+                "error": true,
+                "message": "Failed to rebuild the database due to a filesystem error"
+            }).to_string();
+        },
+        MusicDatabaseRebuildState::Rebuilt => {
+            return json!({
+                "request_type": "Failed",
+                "error": true,
+                "message": "Rebuild the music database"
+            }).to_string();
+        }
+    }
+}

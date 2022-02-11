@@ -1,6 +1,8 @@
 use std::fs::File;
 use std::fs;
+use crate::state::set_state;
 use std::io::Write;
+use crate::enums::MusicDatabaseRebuildState;
 use crate::state::state_to_string;
 use crate::config::get_config;
 use crate::utils::{get_default_music_dir, file_exists, is_directory};
@@ -52,7 +54,7 @@ pub fn create_db(){
     }
     info!("Created database and config files");
 }
-pub fn rebuild_music_database(){
+pub fn rebuild_music_database() -> MusicDatabaseRebuildState {
     warn!("Rebuilding the music database, this make take some time.");
     // find the music dir, in the config file or use the default 
     let config = get_config();
@@ -61,7 +63,7 @@ pub fn rebuild_music_database(){
     let music_dir: String;
     if config_raw.is_none() {
         error!("Configuration error: configuration is null!");
-        return;
+        return MusicDatabaseRebuildState::ConfigError;
     } else {
         configuration = config_raw.unwrap();
     }
@@ -75,10 +77,11 @@ pub fn rebuild_music_database(){
     }
     if !file_exists(music_dir.clone()){
         error!("Music directory does not exist! Make sure the path given is the absolute path");
-        return;
+        return MusicDatabaseRebuildState::FSError;
     }
     // index all of the files in the music folder
     info!("Indexing top-level items in the music directory...");
+    set_state(PlayerState::Rebuilding);
     // loop through every file in the music dir
     let music_items = fs::read_dir(music_dir).unwrap();
     
@@ -110,8 +113,12 @@ pub fn rebuild_music_database(){
         Err(err) => {
             error!("Failed to write database!");
             error!("Error log: {}", err);
+            set_state(PlayerState::Idle);
+            return MusicDatabaseRebuildState::DatabaseWriteError;
         }
     }
     db_file.flush().expect("Failed to flush database to disk");
+    set_state(PlayerState::Idle);
     info!("Rebuilt");
+    return MusicDatabaseRebuildState::Rebuilt;
 }

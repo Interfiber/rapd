@@ -14,3 +14,11 @@ pub enum PlayerState {
     Stop,        // The player is stopping the audio, and will change to a idle state when done
     Rebuilding, // The player is rebuilding the music database
 }
+
+// Music database rebuild state
+pub enum MusicDatabaseRebuildState {
+    ConfigError,
+    FSError,
+    DatabaseWriteError,
+    Rebuilt
+}

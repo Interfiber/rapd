@@ -51,8 +51,9 @@ fn handle_client(stream: TcpStream) {
                         break;
                     },
                     "rebuild_music_db" => {
-                        crate::db::rebuild_music_database();
-                        write_to_stream(stream, requests::get_request_ok_string("Rebuild music database"));
+                        let music_db_status = crate::db::rebuild_music_database();
+                        let status_string = requests::db_rebuild_status_request_string(music_db_status);
+                        write_to_stream(stream, status_string);
                         break;
                     },
                     _ => {
