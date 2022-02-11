@@ -56,6 +56,16 @@ fn handle_client(stream: TcpStream) {
                         write_to_stream(stream, status_string);
                         break;
                     },
+                    "get_music" => {
+                        let music = crate::db::get_music();
+                        let result = json!({
+                            "request_type": "Success",
+                            "error": false,
+                            "message": music
+                        }).to_string();
+                        write_to_stream(stream, result);
+                        break;
+                    },
                     _ => {
                         warn!("Rejecting request: request type invalid");
                         write_to_stream(stream, requests::get_request_rejected_string("Invalid request type"));

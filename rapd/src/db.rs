@@ -122,3 +122,17 @@ pub fn rebuild_music_database() -> MusicDatabaseRebuildState {
     info!("Rebuilt");
     return MusicDatabaseRebuildState::Rebuilt;
 }
+
+// get all music from the database
+pub fn get_music() -> serde_json::Value {
+   let db_path = get_db_path(); 
+   let db_raw = std::fs::read_to_string(db_path).expect("Failed to read from database path");
+   let db_json: serde_json::Value = serde_json::from_str(&db_raw).expect("Failed to parse json");
+   let music = db_json.get("music");
+   if music.is_none(){
+       warn!("Music database is empty, returning empty");
+       return json!([]);
+   } else {
+       return music.unwrap().to_owned();
+   }
+}
