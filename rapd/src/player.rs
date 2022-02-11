@@ -1,6 +1,5 @@
 use soloud::*;
 use std::thread::Builder;
-use std::path::Path;
 use crate::enums::AudioStartStatus;
 use crate::enums::PlayerState;
 use crate::state::set_state;

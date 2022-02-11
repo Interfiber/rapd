@@ -17,5 +17,6 @@ serde = { version = "1.0.136", features = ["derive"] }
 # for config parsing
 toml = "0.5.8"
 # other
-xdg = "2.4.0"
-ctrlc = "3.2.1"
+xdg = "2.4.0" # Get XDG base dir folders
+ctrlc = "3.2.1" # Listen for kill events
+home = "0.5.3" # Get the home folder

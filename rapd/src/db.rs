@@ -1,7 +1,13 @@
 use std::fs::File;
+use std::fs;
+use std::io::Write;
 use crate::state::state_to_string;
+use crate::config::get_config;
+use crate::utils::{get_default_music_dir, file_exists, is_directory};
 use crate::enums::PlayerState;
 
+
+// check if the database exists
 pub fn db_exists() -> bool {
     let xdg_dirs = xdg::BaseDirectories::with_prefix("rapd").unwrap();
     let config_dir = xdg_dirs.get_config_home();
@@ -12,6 +18,16 @@ pub fn db_exists() -> bool {
         return false;
     }
 }
+
+// get the db path
+pub fn get_db_path() -> String {
+    let xdg_dirs = xdg::BaseDirectories::with_prefix("rapd").unwrap();
+    let mut data_dir = xdg_dirs.get_data_home();
+    data_dir.push("db.json");
+    return data_dir.into_os_string().into_string().unwrap();
+}
+
+// create config files & database files
 pub fn create_db(){
     info!("Creating rapd database and config files");
     let xdg_dirs = xdg::BaseDirectories::with_prefix("rapd").unwrap();
@@ -35,4 +51,67 @@ pub fn create_db(){
         }
     }
     info!("Created database and config files");
+}
+pub fn rebuild_music_database(){
+    warn!("Rebuilding the music database, this make take some time.");
+    // find the music dir, in the config file or use the default 
+    let config = get_config();
+    let config_raw = config.get("configuration");
+    let configuration: &toml::Value;
+    let music_dir: String;
+    if config_raw.is_none() {
+        error!("Configuration error: configuration is null!");
+        return;
+    } else {
+        configuration = config_raw.unwrap();
+    }
+    if configuration.get("music_dir").is_none() {
+        warn!("Music dir not specified in config file, using default");
+        music_dir = get_default_music_dir();
+        info!("Music dir is: {}", music_dir);
+    } else {
+        music_dir = configuration.get("music_dir").unwrap().to_string().replace("\"", "");
+        info!("Music dir is: {}", music_dir);
+    }
+    if !file_exists(music_dir.clone()){
+        error!("Music directory does not exist! Make sure the path given is the absolute path");
+        return;
+    }
+    // index all of the files in the music folder
+    info!("Indexing top-level items in the music directory...");
+    // loop through every file in the music dir
+    let music_items = fs::read_dir(music_dir).unwrap();
+    
+    let mut music_files = Vec::new();
+    for path in music_items {
+        let path_string = path.unwrap().path().display().to_string();
+        info!("Found item at path: {}", path_string);
+        // check if the item is a directory
+        if is_directory(path_string.clone()){
+            warn!("Skipping item, item is a directory");
+        } else {
+            info!("Adding file to list");
+            music_files.push(path_string);
+        }
+    } 
+    info!("Collected files, updating database");
+    let music_array = json!(music_files);
+    // update the music database
+    let db_path = get_db_path();
+    let db_raw = std::fs::read_to_string(db_path.clone()).expect("Failed to read from database path");
+    let mut db_json: serde_json::Value = serde_json::from_str(&db_raw).expect("Failed to parse json");
+    let db = db_json.as_object_mut().expect("Failed to borrow");
+    db.insert(String::from("music"), music_array);
+    let db_json_raw = serde_json::to_string(db).expect("Failed to convert database to json");
+    info!("Writing database");
+    let mut db_file = std::fs::OpenOptions::new().truncate(true).write(true).open(db_path.clone()).expect("Failed to open db");
+    match db_file.write_all(db_json_raw.as_bytes()){
+        Ok(_) => print!(""),
+        Err(err) => {
+            error!("Failed to write database!");
+            error!("Error log: {}", err);
+        }
+    }
+    db_file.flush().expect("Failed to flush database to disk");
+    info!("Rebuilt");
 }

@@ -15,7 +15,10 @@ pub fn state_string_to_state(state_string: String) -> Option<PlayerState> {
          },
          "playerstate.stop" => {
              return Some(PlayerState::Stop);
-         }
+         },
+         "playerstate.rebuilding" => {
+             return Some(PlayerState::Rebuilding);
+         },
          _ => {
             error!("statefile is empty, or corrupted!");
             return None;
@@ -29,6 +32,10 @@ pub fn state_to_string(state: PlayerState) -> String {
         PlayerState::Idle => {
             debug!("State match is: playerstate.idle");
             return String::from("playerstate.idle");
+        },
+        PlayerState::Rebuilding => {
+            debug!("State match is: playerstate.rebuilding");
+            return String::from("playerstate.rebuilding");
         },
         PlayerState::Playing => {
             debug!("State match is: playerstate.playing");

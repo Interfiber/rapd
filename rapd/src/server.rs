@@ -49,7 +49,12 @@ fn handle_client(stream: TcpStream) {
                         stop_player();
                         write_to_stream(stream, requests::get_request_ok_string("Sent stop request to player"));
                         break;
-                    }
+                    },
+                    "rebuild_music_db" => {
+                        crate::db::rebuild_music_database();
+                        write_to_stream(stream, requests::get_request_ok_string("Rebuild music database"));
+                        break;
+                    },
                     _ => {
                         warn!("Rejecting request: request type invalid");
                         write_to_stream(stream, requests::get_request_rejected_string("Invalid request type"));
