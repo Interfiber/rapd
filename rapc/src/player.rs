@@ -21,14 +21,14 @@ pub fn stop_player(){
 }
 
 // play a file
-pub fn play_file(path: String) {
+pub fn play_file(path: String, loop_audio: bool) {
     println!("Sending play request to player");
     println!("Audio file path: {}", path);
     let mut stream = get_server_stream();
     let json_request = json!({
         "request_type": "play_audio_file",
         "audio_file_path": path,
-        "loop_audio": false
+        "loop_audio": loop_audio
     }).to_string();
     stream.write(format!("{}\n", json_request).as_bytes()).expect("Failed to write to stream");
     let result = read_from_server(stream);
