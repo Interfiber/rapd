@@ -1,4 +1,5 @@
 use crate::utils::{get_server_stream, read_from_server};
+use text_io::read;
 use serde_json::Value;
 use std::io::Write;
 
@@ -47,4 +48,22 @@ pub fn rebuild(){
     } else {
         println!("Server: {}", result_json["message"].to_string());
     } 
+}
+
+// select music to play from the database
+pub fn tui_select(loop_audio: bool){
+    let music = get_music_db();
+    let mut i = 0;
+    for file in music.iter(){
+        i += 1;
+        println!("{}    {}", i, file.to_string().replace("\"", ""));
+    }
+    println!("Select file number(1-{}):", i);
+    let selected: usize = read!();
+    if selected > music.len() {
+        println!("Please select a valid number!");
+        std::process::exit(1);
+    } else {
+        crate::player::play_file(music[(selected - 1)].to_string().replace("\"", ""), loop_audio);
+    }
 }

@@ -41,6 +41,15 @@ fn main(){
         .subcommand(
             App::new("db_select")
                 .about("Select a file to play from the music database")
+                .arg(
+                    Arg::new("loop")
+                        .short('l')
+                        .long("loop")
+                        .help("Toggle looping for the selected audio")
+                        .takes_value(false)
+                        .multiple_occurrences(false)
+                        .multiple_values(false)
+                )
         )
         .get_matches();
     // match commands
@@ -57,6 +66,10 @@ fn main(){
         },
         Some(("db_rebuild", _)) => {
             db::rebuild();
+        },
+        Some(("db_select", sub_matches)) => {
+            let looped = sub_matches.is_present("loop");
+            db::tui_select(looped);
         }
         _ => unreachable!()
     }
