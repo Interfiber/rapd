@@ -1,5 +1,5 @@
-# Rust Audio Player Daemon
-Cause mpd was annoying
+# RAPD
+The Rust Audio Player Daemon
 
 [![asciicast](https://asciinema.org/a/468543.svg)](https://asciinema.org/a/468543)
 
@@ -9,3 +9,6 @@ Rapd aims to be a fast, lightweight, free, and open-source program to play music
 
 ## Why not mpd?
 Mpd is a cool concept, if it worked(for me). It had weird permisson problems with my music folder, and other things that bugged me.
+
+## Documentation
+You can find the docs [here](https://rapd.readthedocs.io)

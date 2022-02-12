@@ -1,9 +1,15 @@
 [package]
 name = "rapd"
 version = "0.1.0"
+authors = ["Interfiber <webmaster@interfiber.dev>"]
+description = "The Rust Audio Player Daemon"
+readme = "README.md"
+homepage = "https://rapd.readthedocs.io/en/latest/"
+repository = "https://github.com/Interfiber/rapd"
+license-file = "LICENSE"
+keywords = ["audio", "cli", "daemon"]
+categories = ["command-line-utilities", "multimedia::audio"]
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 # for audio play back
