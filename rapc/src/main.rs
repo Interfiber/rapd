@@ -2,6 +2,7 @@ use clap::{arg, App, AppSettings, Arg};
 mod player;
 mod db;
 mod utils;
+mod state;
 
 #[macro_use]
 extern crate serde_json;
@@ -51,6 +52,19 @@ fn main(){
                         .multiple_values(false)
                 )
         )
+        .subcommand(
+            App::new("player_state")
+                .about("Print the current player state")
+                .arg(
+                    Arg::new("readable")
+                        .short('r')
+                        .long("readable")
+                        .help("Make the output text more readable to a human")
+                        .takes_value(false)
+                        .multiple_occurrences(false)
+                        .multiple_values(false)
+                )
+        )
         .get_matches();
     // match commands
     match matches.subcommand() {
@@ -70,6 +84,15 @@ fn main(){
         Some(("db_select", sub_matches)) => {
             let looped = sub_matches.is_present("loop");
             db::tui_select(looped);
+        },
+        Some(("player_state", sub_matches)) => {
+            let readable = sub_matches.is_present("readable");
+            let state = state::get_state(readable);
+            if readable {
+                println!("Player State: {}", state);
+            } else {
+                println!("{}", state);
+            }
         }
         _ => unreachable!()
     }

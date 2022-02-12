@@ -2,6 +2,7 @@ use std::io::{BufRead, BufReader};
 use crate::requests;
 use std::io::Write;
 use std::thread;
+use crate::state::{get_state, state_to_string};
 use crate::requests::AudioPlayRequest;
 use crate::requests::audio_play_status_request_string;
 use crate::json::parse_json_audio_play;
@@ -38,6 +39,7 @@ fn handle_client(stream: TcpStream) {
             } else {
                 // match/switch the request type
                 match json["request_type"].to_string().replace("\"", "").as_str() {
+                    // play an audio file
                     "play_audio_file" => {
                         let audio_req: AudioPlayRequest = parse_json_audio_play(json.to_string());
                         let status = play_audio_from_request(audio_req);
@@ -45,17 +47,20 @@ fn handle_client(stream: TcpStream) {
                         write_to_stream(stream, request_string);
                         break;
                     },
+                    // stop the player
                     "stop_player" => {
                         stop_player();
                         write_to_stream(stream, requests::get_request_ok_string("Sent stop request to player"));
                         break;
                     },
+                    // rebuild the music database
                     "rebuild_music_db" => {
                         let music_db_status = crate::db::rebuild_music_database();
                         let status_string = requests::db_rebuild_status_request_string(music_db_status);
                         write_to_stream(stream, status_string);
                         break;
                     },
+                    // return an array of the music in the music db to the client
                     "get_music" => {
                         let music = crate::db::get_music();
                         let result = json!({
@@ -64,6 +69,13 @@ fn handle_client(stream: TcpStream) {
                             "message": music
                         }).to_string();
                         write_to_stream(stream, result);
+                        break;
+                    },
+                    // return the current player state string to the player
+                    "get_state" => {
+                        let current_state = get_state();
+                        let state_string = state_to_string(current_state);
+                        write_to_stream(stream, requests::get_request_ok_string(&state_string));
                         break;
                     },
                     _ => {
