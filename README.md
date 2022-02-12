@@ -1,6 +1,8 @@
 # RAPD
 The Rust Audio Player Daemon
 
+[![Documentation Status](https://readthedocs.org/projects/rapd/badge/?version=latest)](https://rapd.readthedocs.io/en/latest/?badge=latest)
+
 [![asciicast](https://asciinema.org/a/468543.svg)](https://asciinema.org/a/468543)
 
 ## What rapd trys to do
