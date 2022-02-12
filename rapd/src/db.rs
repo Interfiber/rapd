@@ -41,7 +41,7 @@ pub fn create_db(){
     info!("Config path: {}", config_path.as_path().display());
     info!("State path: {}", state_path.as_path().display());
     info!("Writing files to disk...");
-    File::create(db_path).expect("Failed to write to db_file");
+    File::create(db_path.clone()).expect("Failed to write to db_file");
     File::create(config_path).expect("Failed to write to config_file");
     File::create(state_path.clone()).expect("Failed to create state file");
     // also write the default value to the statefile
@@ -50,6 +50,15 @@ pub fn create_db(){
         Ok(_) => info!("Wrote default state"),
         Err(err) => {
             error!("Failed to write default state!");
+            error!("Error log: {}", err);
+        }
+    }
+    // init the database
+    let base_db = json!({  }).to_string();
+    match std::fs::write(db_path, base_db) {
+        Ok(_) => print!(""),
+        Err(err) => {
+            error!("Failed to init db!");
             error!("Error log: {}", err);
         }
     }
