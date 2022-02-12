@@ -1,9 +1,9 @@
 [package]
 name = "rapd"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Interfiber <webmaster@interfiber.dev>"]
 description = "The Rust Audio Player Daemon"
-readme = "README.md"
+readme = "../README.md"
 homepage = "https://rapd.readthedocs.io/en/latest/"
 repository = "https://github.com/Interfiber/rapd"
 license = "GPL-3.0"
