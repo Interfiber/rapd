@@ -1,4 +1,5 @@
 use std::path::Path;
+use crate::db::get_current_file_symlink_location;
 
 pub fn file_exists(path: String) -> bool {
     if Path::new(&path).exists(){
@@ -17,4 +18,19 @@ pub fn get_default_music_dir() -> String {
 
 pub fn is_directory(path: String) -> bool {
     return Path::new(&path).is_dir();
+}
+
+pub fn remove_current_symlink() {
+    let location = get_current_file_symlink_location();
+    if !file_exists(location) {
+        warn!("Failed to remove symlink, no such file or directory");
+    } else {
+        match std::fs::remove_file(get_current_file_symlink_location()) {
+            Ok(_) => print!(""),
+            Err(err) => {
+                error!("Failed to remove current file symlink!");
+                error!("Error log: {}", err)
+            }
+        }
+    }
 }

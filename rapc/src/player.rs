@@ -41,3 +41,21 @@ pub fn play_file(path: String, loop_audio: bool) {
     }
 }
 
+// get the current playing file
+pub fn get_playing_file(full_path: bool) -> String {
+     let mut stream = get_server_stream();
+    let json_request = json!({
+        "request_type": "current_file",
+        "full_path": full_path
+    }).to_string();
+    stream.write(format!("{}\n", json_request).as_bytes()).expect("Failed to write to stream");
+    let result = read_from_server(stream);
+    let result_json: Value = serde_json::from_str(&result).expect("Failed to parse json");
+    if result_json["error"].as_bool().expect("Failed to convert to bool") {
+        println!("Failed to get current file");
+        return String::from("error");
+    } else {
+        return result_json["message"].to_string().replace("\"", "");
+    }
+
+}

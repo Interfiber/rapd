@@ -1,12 +1,17 @@
 use soloud::*;
+use std::fs::read_link;
 use std::thread::Builder;
+use crate::db::get_current_file_symlink_location;
+use crate::utils::remove_current_symlink;
 use crate::enums::AudioStartStatus;
 use crate::enums::PlayerState;
 use crate::state::set_state;
 use crate::state::get_state;
+use std::os::unix::fs::symlink;
 use crate::utils::file_exists;
 use crate::requests::AudioPlayRequest;
 
+// play an audio file
 pub fn play_audio_file(file: &str, loop_audio: bool) {
     // check if we already have an audio file playing
     if get_state() == PlayerState::Playing {
@@ -21,6 +26,14 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
     wav.set_looping(loop_audio);
     info!("Starting audio playback for file: {}", file);
     sl.play(&wav);
+    debug!("Creating symlinks...");
+    match symlink(file, get_current_file_symlink_location()){
+        Ok(_) => print!(""),
+        Err(err) => {
+            error!("Failed to symlink current file, this will prevent programs from getting the current playing file");
+            error!("Error log: {}", err);
+        }
+    }
     set_state(PlayerState::Playing);
     let mut tick_since_state_recheck = 0;
     while sl.voice_count() > 0 {
@@ -35,10 +48,12 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
         }
         std::thread::sleep(std::time::Duration::from_millis(100));
     }
+    remove_current_symlink(); 
     info!("Audio playback completed for file: {}", file);
     set_state(PlayerState::Idle);
 }
 
+// play an audio file from request
 pub fn play_audio_from_request(request: AudioPlayRequest) -> AudioStartStatus {
     info!("Spawning audio thread...");    
     if !file_exists(request.audio_file_path.clone()) {
@@ -56,7 +71,33 @@ pub fn play_audio_from_request(request: AudioPlayRequest) -> AudioStartStatus {
         }
     }
 }
+// stop the player
 pub fn stop_player() {
     warn!("Stopping player on request");
+    // set the state to be stopped
     set_state(PlayerState::Stop);
+}
+
+// get the current file playing
+pub fn get_current_playing_file(full_path: bool) -> String {
+    let symlink_location = get_current_file_symlink_location();
+    if file_exists(symlink_location.clone()) {
+       match read_link(symlink_location.clone()) {
+            Ok(result) => {
+                if full_path {
+                    return result.into_os_string().into_string().expect("Failed to convert pathbuf to string").replace("\"", "");
+                } else {
+                    let path = result.as_path().file_name().expect("Faile to get filename");
+                    return path.to_os_string().into_string().expect("Failed to convert to string");
+                }
+            },
+            Err(err) => {
+               error!("Failed to read current symlink");
+               error!("Error log: {}", err); 
+               return String::from("");
+            }
+       };
+    } else {
+        return String::from("empty");
+    }
 }

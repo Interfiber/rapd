@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::fs;
 use crate::state::set_state;
+use crate::state::get_state;
 use std::io::Write;
 use crate::enums::MusicDatabaseRebuildState;
 use crate::state::state_to_string;
@@ -56,6 +57,10 @@ pub fn create_db(){
 }
 pub fn rebuild_music_database() -> MusicDatabaseRebuildState {
     warn!("Rebuilding the music database, this make take some time.");
+    if get_state() == PlayerState::Playing {
+        error!("Cant rebuild database while player is active");
+        return MusicDatabaseRebuildState::PlayerRunning;
+    }
     // find the music dir, in the config file or use the default 
     let config = get_config();
     let config_raw = config.get("configuration");
@@ -119,7 +124,8 @@ pub fn rebuild_music_database() -> MusicDatabaseRebuildState {
     }
     db_file.flush().expect("Failed to flush database to disk");
     set_state(PlayerState::Idle);
-    info!("Rebuilt");
+    info!("Rebuilt, wiping current symlink if it exists");
+    crate::utils::remove_current_symlink();
     return MusicDatabaseRebuildState::Rebuilt;
 }
 
@@ -135,4 +141,13 @@ pub fn get_music() -> serde_json::Value {
    } else {
        return music.unwrap().to_owned();
    }
+}
+
+// get the location of the currentfile.symlink
+pub fn get_current_file_symlink_location() -> String {
+    let xdg_dirs = xdg::BaseDirectories::with_prefix("rapd").unwrap();
+    let mut data_dir = xdg_dirs.get_data_home();
+    // push the file into the pathbuf
+    data_dir.push("currentfile.symlink");
+    return data_dir.into_os_string().into_string().expect("Failed to convert to string");
 }

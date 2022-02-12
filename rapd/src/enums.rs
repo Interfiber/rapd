@@ -20,5 +20,6 @@ pub enum MusicDatabaseRebuildState {
     ConfigError,
     FSError,
     DatabaseWriteError,
-    Rebuilt
+    Rebuilt,
+    PlayerRunning
 }

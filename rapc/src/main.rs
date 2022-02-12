@@ -53,6 +53,19 @@ fn main(){
                 )
         )
         .subcommand(
+            App::new("player_file")
+                .about("Print the current playing file")
+                .arg(
+                    Arg::new("fullpath")
+                        .short('f')
+                        .long("full-path")
+                        .help("Print the full path to the file")
+                        .takes_value(false)
+                        .multiple_occurrences(false)
+                        .multiple_values(false)
+                )
+        )
+        .subcommand(
             App::new("player_state")
                 .about("Print the current player state")
                 .arg(
@@ -93,6 +106,11 @@ fn main(){
             } else {
                 println!("{}", state);
             }
+        },
+        Some(("player_file", sub_matches)) => {
+           let full_path =  sub_matches.is_present("fullpath");
+           let file = player::get_playing_file(full_path);
+           println!("{}", file);
         }
         _ => unreachable!()
     }

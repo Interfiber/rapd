@@ -32,6 +32,8 @@ fn main() {
     info!("Creating ctrlc hooks...");
     ctrlc::set_handler(move || {
         state::set_state(enums::PlayerState::Killed);
+        info!("Removing symlink...");
+        utils::remove_current_symlink();
         info!("Exiting");
         std::process::exit(1);
     }).expect("Error setting Ctrl-C handler");

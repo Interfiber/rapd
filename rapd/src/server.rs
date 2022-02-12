@@ -3,13 +3,10 @@ use crate::requests;
 use std::io::Write;
 use std::thread;
 use crate::state::{get_state, state_to_string};
-use crate::requests::AudioPlayRequest;
-use crate::requests::audio_play_status_request_string;
-use crate::json::parse_json_audio_play;
-use crate::player::play_audio_from_request;
-use crate::player::stop_player;
+use crate::requests::{AudioPlayRequest, CurrentFileRequest, audio_play_status_request_string};
+use crate::json::{parse_json_audio_play, parse_json_current_file, parse_json_raw};
+use crate::player::{play_audio_from_request, stop_player};
 use std::net::{TcpListener, TcpStream};
-use crate::json::parse_json_raw;
 
 fn write_to_stream(stream: BufReader<TcpStream>, message: String){
     // write the message to the tcp stream
@@ -76,6 +73,13 @@ fn handle_client(stream: TcpStream) {
                         let current_state = get_state();
                         let state_string = state_to_string(current_state);
                         write_to_stream(stream, requests::get_request_ok_string(&state_string));
+                        break;
+                    },
+                    // get the current playing file
+                    "current_file" => {
+                        let file_request: CurrentFileRequest = parse_json_current_file(json.to_string());
+                        let current_file = crate::player::get_current_playing_file(file_request.full_path);
+                        write_to_stream(stream, requests::current_file_request_string(current_file));
                         break;
                     },
                     _ => {

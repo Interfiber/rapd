@@ -8,6 +8,12 @@ pub struct AudioPlayRequest {
     pub loop_audio: bool
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct CurrentFileRequest {
+    pub request_type: String,
+    pub full_path: bool
+}
+
 
 // functions
 pub fn get_request_rejected_string(why: &str) -> String {
@@ -46,6 +52,14 @@ pub fn audio_play_status_request_string(result: AudioStartStatus) -> String {
     }
 }
 
+pub fn current_file_request_string(path: String) -> String {
+   return json!({
+        "request_type": "Succeeded",
+        "error": false,
+        "message": path
+   }).to_string(); 
+}
+
 pub fn db_rebuild_status_request_string(result: MusicDatabaseRebuildState) -> String {
     match result {
         MusicDatabaseRebuildState::ConfigError => {
@@ -74,6 +88,13 @@ pub fn db_rebuild_status_request_string(result: MusicDatabaseRebuildState) -> St
                 "request_type": "Failed",
                 "error": true,
                 "message": "Rebuilt the music database"
+            }).to_string();
+        },
+        MusicDatabaseRebuildState::PlayerRunning => {
+            return json!({
+                "request_type": "Failed",
+                "error": true,
+                "message": "The player MUST be stopped while the music database is being rebuilt"
             }).to_string();
         }
     }
