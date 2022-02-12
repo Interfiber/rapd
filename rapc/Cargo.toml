@@ -6,3 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# Command line parsing
+clap = "3.0.14"
+# Parsing server results
+serde_json = "1.0.78"
