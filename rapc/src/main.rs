@@ -1,5 +1,6 @@
 use clap::{arg, App, AppSettings, Arg};
 mod player;
+mod db;
 mod utils;
 
 #[macro_use]
@@ -29,6 +30,18 @@ fn main(){
             App::new("player_stop")
                 .about("Stop the player")
         )
+        .subcommand(
+            App::new("db_print")
+                .about("Print the files in the music database")
+        )
+        .subcommand(
+            App::new("db_rebuild")
+                .about("Rebuild the music database")
+        )
+        .subcommand(
+            App::new("db_select")
+                .about("Select a file to play from the music database")
+        )
         .get_matches();
     // match commands
     match matches.subcommand() {
@@ -38,6 +51,12 @@ fn main(){
         },
         Some(("player_stop", _)) => {
             player::stop_player();
+        },
+        Some(("db_print", _)) => {
+            db::print_music_db();
+        },
+        Some(("db_rebuild", _)) => {
+            db::rebuild();
         }
         _ => unreachable!()
     }
