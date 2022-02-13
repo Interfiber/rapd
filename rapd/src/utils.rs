@@ -34,3 +34,4 @@ pub fn remove_current_symlink() {
         }
     }
 }
+

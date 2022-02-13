@@ -97,6 +97,9 @@ pub fn start_server(){
     // load plugins here
     #[cfg(feature = "notifyplugin" )]
     crate::plugins::loader::notify_load_plugin();
+    
+    #[cfg(feature = "discordplugin" )]
+    crate::plugins::loader::discord_load_plugin();
 
     let addr = "127.0.0.1:8932";
     let listener = TcpListener::bind(addr).expect("Failed to bind");

@@ -20,8 +20,7 @@ pub trait PluginApi {
                 // store the current file
                 old_file = get_current_playing_file(true);
             }
-            std::thread::sleep(std::time::Duration::from_millis(100));
+            std::thread::sleep(std::time::Duration::from_millis(5));
         }
     }
 }
-
