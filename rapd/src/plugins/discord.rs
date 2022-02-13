@@ -31,7 +31,13 @@ fn update(){
         }
     };
     let state = format!("Audio name: {}", audio_file);
-    let payload = activity::Activity::new().state(&state).details("Listening to audio...");
+    let payload = activity::Activity::new().state(&state).details("Listening to audio...").assets(
+        activity::Assets::new()
+            .large_image("audio-icon")
+            .small_image("audio-icon")
+            .large_text("Rust Audio Player Daemon")
+            .small_text("RAPD")
+    );
     match client.set_activity(payload){
         Ok(_) => print!(""),
         Err(err) => {
