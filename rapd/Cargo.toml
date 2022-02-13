@@ -26,6 +26,8 @@ toml = "0.5.8"
 xdg = "2.4.0" # Get XDG base dir folders
 ctrlc = "3.2.1" # Listen for kill events
 home = "0.5.3" # Get the home folder
+# plugin
+notify-rust = "4" # send notifications
 
 # Features
 [features]

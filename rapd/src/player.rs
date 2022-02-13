@@ -18,15 +18,23 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
         warn!("Not playing audio file, audio playback already in progress!");
         return;
     }
+    // create a new soloud instance
     let sl = Soloud::default().unwrap();
+
+    // create a new wav instance
     let mut wav = audio::Wav::default();
     info!("Loading audio data into memory");
+    // load the audio data into memory
     wav.load(&std::path::Path::new(file)).expect("Failed to load audio data into memory");
     info!("Looping audio: {}", loop_audio);
+
+    // set looping if we need
     wav.set_looping(loop_audio);
     info!("Starting audio playback for file: {}", file);
+    // play the audio
     sl.play(&wav);
     debug!("Creating symlinks...");
+    // create symlinks
     match symlink(file, get_current_file_symlink_location()){
         Ok(_) => print!(""),
         Err(err) => {
@@ -34,6 +42,8 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
             error!("Error log: {}", err);
         }
     }
+
+    // update the state
     set_state(PlayerState::Playing);
     let mut tick_since_state_recheck = 0;
     while sl.voice_count() > 0 {
@@ -48,8 +58,11 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
         }
         std::thread::sleep(std::time::Duration::from_millis(100));
     }
+    // remove the symlinks
     remove_current_symlink(); 
     info!("Audio playback completed for file: {}", file);
+   
+    // update the state
     set_state(PlayerState::Idle);
 }
 
