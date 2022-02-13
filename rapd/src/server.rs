@@ -68,6 +68,16 @@ fn handle_client(stream: TcpStream) {
                         write_to_stream(stream, result);
                         break;
                     },
+                    "server_shutdown" => {
+                        let result = json!({
+                            "request_type": "Success",
+                            "error": false,
+                            "message": "Shutting down server"
+                        }).to_string();
+                        write_to_stream(stream, result);
+                        crate::utils::shutdown();
+                        break;
+                    },
                     // return the current player state string to the player
                     "get_state" => {
                         let current_state = get_state();

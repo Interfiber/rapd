@@ -36,11 +36,7 @@ fn main() {
     info!("Started env_logger");
     info!("Creating ctrlc hooks...");
     ctrlc::set_handler(move || {
-        state::set_state(enums::PlayerState::Killed);
-        info!("Removing symlink...");
-        utils::remove_current_symlink();
-        info!("Exiting");
-        std::process::exit(1);
+        utils::shutdown();
     }).expect("Error setting Ctrl-C handler");
     info!("Starting server");
     server::start_server();

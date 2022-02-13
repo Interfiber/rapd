@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
 if [[ "$1" == "--build-release" ]]; then
-  if [ -z "${RAPD_EXTRA_FEATURES}" ]; then
-    export RAPD_EXTRA_FEATURES=""
-  fi
-  echo "## Building release package ##"
   rm -rf target
-  cargo build --release --features $RAPD_EXTRA_FEATURES
-  echo "## Built binarys to ./target ##"
+  if [ -z "${RAPD_EXTRA_FEATURES}" ]; then
+    echo "## Building release package ##"
+    cargo build --release
+    echo "## Built binarys to ./target ##"
+  else
+    cargo build --release --features $RAPD_EXTRA_FEATURES
+    echo "## Built binarys to ./target ##"
+  fi
 fi
 if [[ "$1" == "--install-release" ]]; then
   echo "## Installing release build ##"
