@@ -7,9 +7,7 @@ pub trait PluginApi {
         info!("Enabled plugin");
     }
     fn hooks(&mut self) -> Vec<String>;
-    fn file_changed_hook(&mut self, file: String){
-        unimplemented!();
-    }
+    fn file_changed_hook(&mut self, file: String);
     fn spawn(&mut self){
         let mut old_file = get_current_playing_file(true);
         loop {

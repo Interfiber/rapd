@@ -14,5 +14,5 @@ pub fn notify_load_plugin(){
     // spawn a new thread with our plugin loop
     Builder::new().name("notify_plugin".to_string()).spawn(move || {
         notify_plugin.spawn();
-    });
+    }).expect("Failed to spawn plugin thread for notify plugin!");
 }
