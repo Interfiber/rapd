@@ -1,6 +1,11 @@
 // modules
 mod player;
 mod state;
+// only compile plugins if we have it enabled
+#[cfg(feature = "plugins")]
+mod plugins;
+#[cfg(feature = "plugins")]
+mod plugin_api;
 mod config;
 mod requests;
 mod db;
