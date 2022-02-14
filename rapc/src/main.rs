@@ -66,6 +66,10 @@ fn main(){
                 )
         )
         .subcommand(
+            App::new("shutdown_server")
+                .about("Shutdown the rapd server")
+        )
+        .subcommand(
             App::new("player_state")
                 .about("Print the current player state")
                 .arg(
@@ -111,7 +115,10 @@ fn main(){
            let full_path =  sub_matches.is_present("fullpath");
            let file = player::get_playing_file(full_path);
            println!("{}", file);
-        }
+        },
+        Some(("shutdown_server", _)) => {
+            player::shutdown_server();
+        },
         _ => unreachable!()
     }
 }

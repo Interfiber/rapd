@@ -67,7 +67,7 @@ fn update(){
             error!("Failed to update discord, attemping a reconnect in 2 seconds");
             error!("Error log: {}", err);
             std::thread::sleep(std::time::Duration::from_secs(2));
-            client.reconnect();
+            let _ = client.reconnect();
         }
     }
     std::thread::sleep(std::time::Duration::from_secs(2));
@@ -88,7 +88,6 @@ impl PluginApi for DiscordPlugin {
     fn start(&mut self) {
         info!("Discord plugin loaded");
         // test if we still have state files, if so remove them
-
         std::thread::Builder::new().name("discord_plugin_background_process".to_string()).spawn(move || {
             update();
         }).expect("Failed to spawn updater thread");
