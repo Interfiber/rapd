@@ -10,15 +10,38 @@ use discord_rich_presence::{activity, new_client, DiscordIpc};
 pub struct DiscordPlugin {
 }
 
+fn client_try_new() -> Box<dyn DiscordIpc> {
+    match new_client("942481156971057213"){
+        Ok(client) => {
+            info!("Connected!");
+            return Box::new(client);
+        },
+        Err(err) => {
+            error!("Failed to connect");
+            error!("Error log: {}", err);
+            info!("Attempting reconnect in 5 seconds");
+            std::thread::sleep(std::time::Duration::from_secs(5));
+            client_try_new()
+        }
+    }
+}
+
 // thread that runs in the background to update discord
 fn update(){
-  let mut client = new_client("942481156971057213").expect("Failed to connect to discord");
-  match client.connect(){
-      Ok(_) => info!("Connected to discord IPC"),
-      Err(err) => {
-          error!("Failed to connect to discord");
-          error!("Error log: {}", err);
-      }
+  let mut client = client_try_new();
+  // loop until we connect
+  loop {
+    match client.connect(){
+        Ok(_) => {
+            info!("Connected to Discord IPC");
+            break;
+        }
+        Err(err) => {
+            error!("Failed to connect, retrying in 2 seconds");
+            error!("Error log: {}", err);
+            std::thread::sleep(std::time::Duration::from_secs(2));
+        } 
+    }
   }
   loop {
     let audio_file;
@@ -41,8 +64,10 @@ fn update(){
     match client.set_activity(payload){
         Ok(_) => print!(""),
         Err(err) => {
-            error!("Failed to update discord");
+            error!("Failed to update discord, attemping a reconnect in 2 seconds");
             error!("Error log: {}", err);
+            std::thread::sleep(std::time::Duration::from_secs(2));
+            client.reconnect();
         }
     }
     std::thread::sleep(std::time::Duration::from_secs(2));
