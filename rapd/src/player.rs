@@ -1,4 +1,3 @@
-use soloud::*;
 use std::fs::read_link;
 use std::thread::Builder;
 use crate::db::get_current_file_symlink_location;
@@ -8,8 +7,13 @@ use crate::enums::PlayerState;
 use crate::state::set_state;
 use crate::state::get_state;
 use std::os::unix::fs::symlink;
+use std::time::Duration;
+use std::thread;
 use crate::utils::file_exists;
 use crate::requests::AudioPlayRequest;
+use std::io::BufReader;
+
+// NOTE: Cleanup code after audio backend change
 
 // play an audio file
 pub fn play_audio_file(file: &str, loop_audio: bool) {
@@ -18,21 +22,13 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
         warn!("Not playing audio file, audio playback already in progress!");
         return;
     }
-    // create a new soloud instance
-    let sl = Soloud::default().expect("Failed to create soloud instance");
-
-    // create a new wav instance
-    let mut wav = audio::Wav::default();
-    info!("Loading audio data into memory");
-    // load the audio data into memory
-    wav.load(&std::path::Path::new(file)).expect("Failed to load audio data into memory");
-    info!("Looping audio: {}", loop_audio);
-
-    // set looping if we need
-    wav.set_looping(loop_audio);
+    // create a rodio stream handler
+    let (_stream, stream_handle) = rodio::OutputStream::try_default().expect("Failed to create an output stream");
+    let audio_file = std::fs::File::open(file).expect("Failed to open file for reading" );
+    let sound = stream_handle.play_once(BufReader::new(audio_file)).unwrap();
+    sound.set_volume(0.2);
     info!("Starting audio playback for file: {}", file);
     // play the audio
-    sl.play(&wav);
     debug!("Creating symlinks...");
     // create symlinks
     match symlink(file, get_current_file_symlink_location()){
@@ -45,18 +41,27 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
 
     // update the state
     set_state(PlayerState::Playing);
-    let mut tick_since_state_recheck = 0;
-    while sl.voice_count() > 0 {
-        tick_since_state_recheck += 1;
-        if tick_since_state_recheck >= 3 {
-            // re-evaluate the player state
-            if get_state() == PlayerState::Stop {
-                info!("Got stop request in statefile, stopping player");
-                break;
+    // sound update loop
+    let mut state_recheck_ticker = 0;
+    loop {
+        if sound.empty() {
+            // the sound ended, break
+            break;
+        } else {
+            state_recheck_ticker += 1;
+            // check if we need to stop via getting the state
+            if state_recheck_ticker >= 2 {
+                if get_state() == PlayerState::Stop {
+                    info!("Got stop request in state file, halting player");
+                    sound.stop();
+                    info!("Breaking...");
+                    break;
+                }
+                state_recheck_ticker = 0;
             }
-            tick_since_state_recheck = 0;
+            info!("{}", state_recheck_ticker);
+            thread::sleep(Duration::from_millis(500));
         }
-        std::thread::sleep(std::time::Duration::from_millis(100));
     }
     // remove the symlinks
     remove_current_symlink(); 
