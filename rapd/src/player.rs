@@ -19,7 +19,7 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
         return;
     }
     // create a new soloud instance
-    let sl = Soloud::default().unwrap();
+    let sl = Soloud::default().expect("Failed to create soloud instance");
 
     // create a new wav instance
     let mut wav = audio::Wav::default();
