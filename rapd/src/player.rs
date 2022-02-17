@@ -9,9 +9,9 @@ use crate::state::get_state;
 use std::os::unix::fs::symlink;
 use std::time::Duration;
 use std::thread;
+use rodio::{Decoder, OutputStream, Sink, Source};
 use crate::utils::file_exists;
-use crate::requests::AudioPlayRequest;
-use std::io::BufReader;
+use crate::requests::AudioPlayRequest; use std::{fs::File, io::BufReader};
 
 // NOTE: Cleanup code after audio backend change
 
@@ -23,10 +23,8 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
         return;
     }
     // create a rodio stream handler
-    let (_stream, stream_handle) = rodio::OutputStream::try_default().expect("Failed to create an output stream");
-    let audio_file = std::fs::File::open(file).expect("Failed to open file for reading" );
-    let sound = stream_handle.play_once(BufReader::new(audio_file)).unwrap();
-    sound.set_volume(0.2);
+    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+    let sink = Sink::try_new(&stream_handle).unwrap();
     info!("Starting audio playback for file: {}", file);
     // play the audio
     debug!("Creating symlinks...");
@@ -38,37 +36,41 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
             error!("Error log: {}", err);
         }
     }
-
+    // create a source and play it
+    let audio_file = BufReader::new(File::open(file).expect("Failed to open file for reading"));
+    let source = Decoder::new(audio_file).unwrap();
+    if loop_audio {
+        sink.append(source.repeat_infinite());
+    } else {
+        sink.append(source);
+    }
+    
     // update the state
     set_state(PlayerState::Playing);
     // sound update loop
     let mut state_recheck_ticker = 0;
     loop {
-        if sound.empty() {
-            // the sound ended, break
-            break;
-        } else {
-            state_recheck_ticker += 1;
-            // check if we need to stop via getting the state
-            if state_recheck_ticker >= 2 {
-                if get_state() == PlayerState::Stop {
-                    info!("Got stop request in state file, halting player");
-                    sound.stop();
-                    info!("Breaking...");
-                    break;
-                }
-                state_recheck_ticker = 0;
-            }
-            info!("{}", state_recheck_ticker);
-            thread::sleep(Duration::from_millis(500));
-        }
+         if sink.empty(){
+             break;
+         }
+         state_recheck_ticker += 1;
+         // check if we need to stop via getting the state
+         if state_recheck_ticker >= 2 {
+             if get_state() == PlayerState::Stop {
+                 info!("Got stop request in state file, halting player");
+                 sink.stop();
+                 info!("Breaking...");
+                 break;
+             }
+             state_recheck_ticker = 0;
+         }
+         thread::sleep(Duration::from_millis(500));
     }
     // remove the symlinks
     remove_current_symlink(); 
     info!("Audio playback completed for file: {}", file);
-   
-    // update the state
     set_state(PlayerState::Idle);
+    return;
 }
 
 // play an audio file from request
