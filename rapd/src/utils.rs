@@ -1,10 +1,10 @@
-use std::path::Path;
-use crate::state;
-use crate::enums;
 use crate::db::get_current_file_symlink_location;
+use crate::enums;
+use crate::state;
+use std::path::Path;
 
 pub fn file_exists(path: String) -> bool {
-    if Path::new(&path).exists(){
+    if Path::new(&path).exists() {
         return true;
     } else {
         return false;
@@ -37,7 +37,7 @@ pub fn remove_current_symlink() {
     }
 }
 
-pub fn shutdown(){
+pub fn shutdown() {
     state::set_state(enums::PlayerState::Killed);
     info!("Removing symlink...");
     remove_current_symlink();

@@ -1,13 +1,13 @@
 use clap::{arg, App, AppSettings, Arg};
-mod player;
 mod db;
-mod utils;
+mod player;
 mod state;
+mod utils;
 
 #[macro_use]
 extern crate serde_json;
 
-fn main(){
+fn main() {
     let matches = App::new("rapc")
         .about("Rust Audio Player Client")
         .author("Interfiber <webmaster@interfiber.dev>")
@@ -23,22 +23,13 @@ fn main(){
                         .help("Toggle looping for the audio")
                         .takes_value(false)
                         .multiple_occurrences(false)
-                        .multiple_values(false)
+                        .multiple_values(false),
                 )
-                .setting(AppSettings::ArgRequiredElseHelp)
+                .setting(AppSettings::ArgRequiredElseHelp),
         )
-        .subcommand(
-            App::new("player_stop")
-                .about("Stop the player")
-        )
-        .subcommand(
-            App::new("db_print")
-                .about("Print the files in the music database")
-        )
-        .subcommand(
-            App::new("db_rebuild")
-                .about("Rebuild the music database")
-        )
+        .subcommand(App::new("player_stop").about("Stop the player"))
+        .subcommand(App::new("db_print").about("Print the files in the music database"))
+        .subcommand(App::new("db_rebuild").about("Rebuild the music database"))
         .subcommand(
             App::new("db_select")
                 .about("Select a file to play from the music database")
@@ -49,8 +40,8 @@ fn main(){
                         .help("Toggle looping for the selected audio")
                         .takes_value(false)
                         .multiple_occurrences(false)
-                        .multiple_values(false)
-                )
+                        .multiple_values(false),
+                ),
         )
         .subcommand(
             App::new("player_file")
@@ -62,13 +53,10 @@ fn main(){
                         .help("Print the full path to the file")
                         .takes_value(false)
                         .multiple_occurrences(false)
-                        .multiple_values(false)
-                )
+                        .multiple_values(false),
+                ),
         )
-        .subcommand(
-            App::new("shutdown_server")
-                .about("Shutdown the rapd server")
-        )
+        .subcommand(App::new("shutdown_server").about("Shutdown the rapd server"))
         .subcommand(
             App::new("player_state")
                 .about("Print the current player state")
@@ -79,29 +67,32 @@ fn main(){
                         .help("Make the output text more readable to a human")
                         .takes_value(false)
                         .multiple_occurrences(false)
-                        .multiple_values(false)
-                )
+                        .multiple_values(false),
+                ),
         )
         .get_matches();
     // match commands
     match matches.subcommand() {
         Some(("play", sub_matches)) => {
             let loop_audio = sub_matches.is_present("loop");
-            player::play_file(sub_matches.value_of("PATH").unwrap().to_string(), loop_audio);
-        },
+            player::play_file(
+                sub_matches.value_of("PATH").unwrap().to_string(),
+                loop_audio,
+            );
+        }
         Some(("player_stop", _)) => {
             player::stop_player();
-        },
+        }
         Some(("db_print", _)) => {
             db::print_music_db();
-        },
+        }
         Some(("db_rebuild", _)) => {
             db::rebuild();
-        },
+        }
         Some(("db_select", sub_matches)) => {
             let looped = sub_matches.is_present("loop");
             db::tui_select(looped);
-        },
+        }
         Some(("player_state", sub_matches)) => {
             let readable = sub_matches.is_present("readable");
             let state = state::get_state(readable);
@@ -110,15 +101,15 @@ fn main(){
             } else {
                 println!("{}", state);
             }
-        },
+        }
         Some(("player_file", sub_matches)) => {
-           let full_path =  sub_matches.is_present("fullpath");
-           let file = player::get_playing_file(full_path);
-           println!("{}", file);
-        },
+            let full_path = sub_matches.is_present("fullpath");
+            let file = player::get_playing_file(full_path);
+            println!("{}", file);
+        }
         Some(("shutdown_server", _)) => {
             player::shutdown_server();
-        },
-        _ => unreachable!()
+        }
+        _ => unreachable!(),
     }
 }

@@ -3,7 +3,7 @@
 pub mod notify;
 
 // discord plugin
-#[cfg(feature = "discordplugin" )]
+#[cfg(feature = "discordplugin")]
 pub mod discord;
 
 // plugin loader, we build this by default

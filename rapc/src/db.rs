@@ -1,26 +1,36 @@
 use crate::utils::{get_server_stream, read_from_server};
-use text_io::read;
 use serde_json::Value;
 use std::io::Write;
+use text_io::read;
 
 pub fn get_music_db() -> Vec<Value> {
-      let mut stream = get_server_stream();
+    let mut stream = get_server_stream();
     let json_request = json!({
         "request_type": "get_music"
-    }).to_string();
-    stream.write(format!("{}\n", json_request).as_bytes()).expect("Failed to write to stream");
+    })
+    .to_string();
+    stream
+        .write(format!("{}\n", json_request).as_bytes())
+        .expect("Failed to write to stream");
     let result = read_from_server(stream);
     let result_json: Value = serde_json::from_str(&result).expect("Failed to parse json");
-    if result_json["error"].as_bool().expect("Failed to convert to bool") {
+    if result_json["error"]
+        .as_bool()
+        .expect("Failed to convert to bool")
+    {
         println!("Failed to get player music");
         return json!([]).as_array().unwrap().to_vec();
     } else {
-        return result_json["message"].as_array().expect("Failed to convert message to array").to_vec().to_owned();
+        return result_json["message"]
+            .as_array()
+            .expect("Failed to convert message to array")
+            .to_vec()
+            .to_owned();
     }
 }
 
 // print the contents of the music db
-pub fn print_music_db(){
+pub fn print_music_db() {
     println!("Querying database...");
     let music = get_music_db();
     println!("Query results:");
@@ -33,28 +43,34 @@ pub fn print_music_db(){
 }
 
 // rebuild the db
-pub fn rebuild(){
+pub fn rebuild() {
     println!("Rebuilding music database...");
     let mut stream = get_server_stream();
     let json_request = json!({
         "request_type": "rebuild_music_db"
-    }).to_string();
-    stream.write(format!("{}\n", json_request).as_bytes()).expect("Failed to write to stream");
+    })
+    .to_string();
+    stream
+        .write(format!("{}\n", json_request).as_bytes())
+        .expect("Failed to write to stream");
     let result = read_from_server(stream);
     let result_json: Value = serde_json::from_str(&result).expect("Failed to parse json");
-    if result_json["error"].as_bool().expect("Failed to convert to bool") {
+    if result_json["error"]
+        .as_bool()
+        .expect("Failed to convert to bool")
+    {
         println!("Failed to rebuild database");
         println!("Log: {}", result_json["message"].to_string());
     } else {
         println!("Server: {}", result_json["message"].to_string());
-    } 
+    }
 }
 
 // select music to play from the database
-pub fn tui_select(loop_audio: bool){
+pub fn tui_select(loop_audio: bool) {
     let music = get_music_db();
     let mut i = 0;
-    for file in music.iter(){
+    for file in music.iter() {
         i += 1;
         println!("{}    {}", i, file.to_string().replace("\"", ""));
     }
@@ -64,6 +80,9 @@ pub fn tui_select(loop_audio: bool){
         println!("Please select a valid number!");
         std::process::exit(1);
     } else {
-        crate::player::play_file(music[(selected - 1)].to_string().replace("\"", ""), loop_audio);
+        crate::player::play_file(
+            music[(selected - 1)].to_string().replace("\"", ""),
+            loop_audio,
+        );
     }
 }

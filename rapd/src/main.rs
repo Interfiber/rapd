@@ -2,17 +2,17 @@
 mod player;
 mod state;
 // only compile plugins if we have it enabled
-#[cfg(feature = "plugins")]
-mod plugins;
-#[cfg(feature = "plugins")]
-mod plugin_api;
 mod config;
-mod requests;
 mod db;
 mod enums;
-mod utils;
-mod server;
 mod json;
+#[cfg(feature = "plugins")]
+mod plugin_api;
+#[cfg(feature = "plugins")]
+mod plugins;
+mod requests;
+mod server;
+mod utils;
 // imports
 #[macro_use]
 extern crate log;
@@ -37,7 +37,8 @@ fn main() {
     info!("Creating ctrlc hooks...");
     ctrlc::set_handler(move || {
         utils::shutdown();
-    }).expect("Error setting Ctrl-C handler");
+    })
+    .expect("Error setting Ctrl-C handler");
     info!("Starting server");
     server::start_server();
 }

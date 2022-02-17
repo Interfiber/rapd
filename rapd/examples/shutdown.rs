@@ -1,9 +1,9 @@
+use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Write;
-use std::io::BufRead;
 use std::net::TcpStream;
 
-fn main(){
+fn main() {
     let mut stream = TcpStream::connect("127.0.0.1:8932").expect("Failed to connect");
     let len = stream.write(b"{\"request_type\":\"server_shutdown\"}\n");
     let mut reader = BufReader::new(stream);
