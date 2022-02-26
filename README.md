@@ -13,4 +13,4 @@ Rapd aims to be a fast, lightweight, free, and open-source program to play music
 Mpd is a cool concept, if it worked(for me). It had weird permisson problems with my music folder, and other things that bugged me.
 
 ## Documentation
-You can find the docs [here](https://rapd.readthedocs.io)
+You can find the docs [here]( www.interfiber.dev/rapd )
