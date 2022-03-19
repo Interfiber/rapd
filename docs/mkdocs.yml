@@ -1,0 +1,27 @@
+site_name: RAPD Docs
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
+    - scheme: slate
+      primary: red
+      accent: red
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to light mode
+
+repo_name: Interfiber/rapd
+nav:
+  - Home: index.md
+  - Installing on GNU/Linux: install-gnu-linux.md
+  - Installing on MacOS: install-macos.md
+  - Auto starting: auto-start.md
+  - Create a config: create-a-config.md
+  - Adding Music: adding-music.md
+  - Playing Music: playing-music.md
+  - RAPD Protocol: protocol.md

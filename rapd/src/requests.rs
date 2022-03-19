@@ -104,8 +104,8 @@ pub fn db_rebuild_status_request_string(result: MusicDatabaseRebuildState) -> St
         }
         MusicDatabaseRebuildState::Rebuilt => {
             return json!({
-                "request_type": "Failed",
-                "error": true,
+                "request_type": "Succeeded",
+                "error": false,
                 "message": "Rebuilt the music database"
             })
             .to_string();
