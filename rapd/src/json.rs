@@ -13,3 +13,13 @@ pub fn parse_json_current_file(data: String) -> CurrentFileRequest {
     let v: CurrentFileRequest = serde_json::from_str(&data).expect("Failed to parse json");
     return v;
 }
+
+pub fn parse_json_metadata_get(data: String) -> MetadataGetRequest {
+    let v: MetadataGetRequest = serde_json::from_str(&data).expect("Failed to parse json");
+    return v;
+}
+
+pub fn parse_json_metadata_set(data: String) -> MetadataSetRequest {
+    let v: MetadataSetRequest = serde_json::from_str(&data).expect("Failed to parse json");
+    return v;
+}

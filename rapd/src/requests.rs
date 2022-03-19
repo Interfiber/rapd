@@ -14,6 +14,19 @@ pub struct CurrentFileRequest {
     pub full_path: bool,
 }
 
+#[derive(Serialize,Deserialize)]
+pub struct MetadataGetRequest {
+    pub request_type: String,
+    pub path: String
+}
+
+#[derive(Serialize,Deserialize)]
+pub struct MetadataSetRequest {
+    pub request_type: String,
+    pub path: String,
+    pub new_value: String
+}
+
 // functions
 pub fn get_request_rejected_string(why: &str) -> String {
     return json!({

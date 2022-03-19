@@ -1,7 +1,7 @@
 // modules
 mod player;
 mod state;
-// only compile plugins if we have it enabled
+mod metadata;
 mod config;
 mod db;
 mod enums;

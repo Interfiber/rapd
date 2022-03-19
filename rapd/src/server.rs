@@ -1,6 +1,7 @@
-use crate::json::{parse_json_audio_play, parse_json_current_file, parse_json_raw};
+use crate::json::{parse_json_audio_play, parse_json_current_file, parse_json_raw, parse_json_metadata_get, parse_json_metadata_set};
+use crate::metadata::{get_title, set_title};
 use crate::player::{play_audio_from_request, stop_player};
-use crate::requests;
+use crate::requests::{self, MetadataGetRequest, MetadataSetRequest};
 use crate::requests::{audio_play_status_request_string, AudioPlayRequest, CurrentFileRequest};
 use crate::state::{get_state, state_to_string};
 use std::io::Write;
@@ -105,7 +106,29 @@ fn handle_client(stream: TcpStream) {
                             requests::current_file_request_string(current_file),
                         );
                         break;
-                    }
+                    },
+                    "metadata_get_title" => {
+                        let metadata_title_request: MetadataGetRequest = parse_json_metadata_get(json.to_string());
+                        let title = get_title(metadata_title_request.path);
+                        let response = json!({
+                            "request_type": "Success",
+                            "error": false,
+                            "message": title
+                        });
+                        write_to_stream(stream, response.to_string());
+                        break;
+                    },
+                    "metadata_set_title" => {
+                        let metadata_set_request: MetadataSetRequest = parse_json_metadata_set(json.to_string());
+                        set_title(metadata_set_request.path, metadata_set_request.new_value);
+                        let response = json!({
+                            "request_type": "Success",
+                            "error": false,
+                            "message": "Set title"
+                        });
+                        write_to_stream(stream, response.to_string());
+                        break;
+                    },
                     _ => {
                         warn!("Rejecting request: request type invalid");
                         write_to_stream(
