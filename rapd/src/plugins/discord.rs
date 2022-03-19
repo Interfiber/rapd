@@ -49,7 +49,7 @@ fn update() {
             Err(err) => {
                 error!("Failed to read state");
                 error!("Error log: {}", err);
-                audio_file = "failed".to_string();
+                audio_file = "empty".to_string();
             }
         };
         let state = format!("Audio name: {}", audio_file);
