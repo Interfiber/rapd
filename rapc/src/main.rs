@@ -1,6 +1,7 @@
 use clap::{arg, App, AppSettings, Arg};
 mod db;
 mod player;
+mod metadata;
 mod state;
 mod utils;
 
@@ -70,6 +71,17 @@ fn main() {
                         .multiple_values(false),
                 ),
         )
+        .subcommand(
+            App::new("metadata_set_title")
+                	.about("Set the title of a music file")
+                	.arg(arg!(<PATH> "Path to the file that will be effected"))
+                	.arg(arg!(<TITLE> "Title to be written,,"))
+        )
+        .subcommand(
+            App::new("metadata_get_title")
+                .about("Get the title of a music file")
+                .arg(arg!(<PATH> "Path to the audio file"))
+        )
         .get_matches();
     // match commands
     match matches.subcommand() {
@@ -109,6 +121,15 @@ fn main() {
         }
         Some(("shutdown_server", _)) => {
             player::shutdown_server();
+        }
+        Some(("metadata_set_title", sub_matches)) => {
+            let title = sub_matches.value_of("TITLE").unwrap().to_string();
+            let path = sub_matches.value_of("PATH").unwrap().to_string();
+            metadata::set_title(path, title);
+        },
+        Some(("metadata_get_title", sub_matches)) => {
+            let path = sub_matches.value_of("PATH").unwrap().to_string();
+            metadata::get_title(path);
         }
         _ => unreachable!(),
     }
