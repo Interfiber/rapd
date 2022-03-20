@@ -11,4 +11,3 @@ pub fn add_player_start(cmd: String) {
     let _len = reader.read_line(&mut line);
     println!("Got from server: {}", &line);
 }
-

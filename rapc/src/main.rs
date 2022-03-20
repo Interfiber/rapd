@@ -1,7 +1,7 @@
 use clap::{arg, App, AppSettings, Arg};
 mod db;
-mod metadata;
 mod hook;
+mod metadata;
 mod player;
 mod state;
 mod utils;
@@ -75,7 +75,7 @@ fn main() {
         .subcommand(
             App::new("hook_add_player_start")
                 .about("Add a hook that fires when the music player starts playing a file")
-                .arg(arg!(<COMMAND> "Command to execute with /bin/sh on hook fire"))
+                .arg(arg!(<COMMAND> "Command to execute with /bin/sh on hook fire")),
         )
         .subcommand(
             App::new("metadata_set_title")
@@ -136,7 +136,7 @@ fn main() {
         Some(("metadata_get_title", sub_matches)) => {
             let path = sub_matches.value_of("PATH").unwrap().to_string();
             metadata::get_title(path);
-        },
+        }
         Some(("hook_add_player_start", sub_matches)) => {
             let cmd = sub_matches.value_of("COMMAND").unwrap().to_string();
             hook::add_player_start(cmd);

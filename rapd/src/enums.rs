@@ -28,11 +28,11 @@ pub enum MusicDatabaseRebuildState {
 pub enum HookType {
     PlayerStart,
     ServerShutdown,
-    Unknown
+    Unknown,
 }
 
 pub enum HookAddState {
     Added,
     FsError,
-    InvalidHookType
+    InvalidHookType,
 }
