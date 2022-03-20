@@ -1,10 +1,10 @@
 // Name: notify plugin
 // Description: Notify you via the system notification daemon when something changes
 // Author: Interfiber <webmaster@interfiber.dev>
-use crate::plugin_api::PluginApi;
 use crate::config;
-use std::path::Path;
+use crate::plugin_api::PluginApi;
 use notify_rust::Notification;
+use std::path::Path;
 
 // construct our plugin
 pub struct NotifyPlugin {}
@@ -13,31 +13,35 @@ fn get_filename_from_path_string(path_string: String) -> String {
     let path = Path::new(&path_string);
     let file_name = path.file_name();
     if file_name.is_none() {
-         return String::from("filename.convert.failed");
-     } else {
+        return String::from("filename.convert.failed");
+    } else {
         let file_name_raw = file_name.expect("Failed to unwrap");
         return file_name_raw
-             .to_os_string()
-             .into_string()
-             .expect("Failed to convert to string");
-     }
+            .to_os_string()
+            .into_string()
+            .expect("Failed to convert to string");
+    }
 }
 
 fn get_config_format() -> String {
     let config = config::get_config();
     let default_format = "Playing: FILE";
     let notify_config: &toml::Value;
-    if config.get("notify").is_none(){
+    if config.get("notify").is_none() {
         error!("Failed to read notify config, using default config");
         return default_format.to_string();
     } else {
         notify_config = config.get("notify").unwrap();
     }
-    if notify_config.get("format").is_none(){
+    if notify_config.get("format").is_none() {
         error!("Failed to read format from config, using default");
         return default_format.to_string();
     } else {
-        return notify_config.get("format").unwrap().to_string().replace("\"", "");
+        return notify_config
+            .get("format")
+            .unwrap()
+            .to_string()
+            .replace("\"", "");
     }
 }
 

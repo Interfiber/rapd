@@ -11,4 +11,3 @@ fn main() {
     let len = reader.read_line(&mut line);
     println!("Got from server: {}", &line);
 }
-

@@ -1,17 +1,17 @@
 // modules
-mod player;
-mod state;
-mod metadata;
 mod config;
 mod db;
 mod enums;
 mod json;
+mod metadata;
+mod player;
 #[cfg(feature = "plugins")]
 mod plugin_api;
 #[cfg(feature = "plugins")]
 mod plugins;
 mod requests;
 mod server;
+mod state;
 mod utils;
 // imports
 #[macro_use]
