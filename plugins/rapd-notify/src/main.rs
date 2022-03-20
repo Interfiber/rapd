@@ -1,4 +1,5 @@
 use notify_rust::{Notification, Hint};
+use std::env;
 use serde_json::Value;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -19,10 +20,22 @@ fn get_playing_file() -> String {
 
 
 fn main() {
-Notification::new()
-    .summary("Playing music")
-    .body(&format!("Playing file: {}", get_playing_file()))
-    .appname("rapd-notify")
-    .hint(Hint::Category("music".to_owned()))
-    .show().expect("Failed to send"); 
+    let args: Vec<String> = env::args().collect(); 
+    println!("{:#?}", args);
+    println!("{}", args.len());
+    if args.len() == 1 {
+        Notification::new()
+            .summary("Playing music")
+            .body(&format!("Playing file: {}", get_playing_file()))
+            .appname("rapd-notify")
+            .hint(Hint::Category("music".to_owned()))
+            .show().expect("Failed to send"); 
+    } else if args.len() == 2 && args[1] == "shutdown" {
+        Notification::new()
+            .summary("Rapd server")
+            .body("The rapd server has shutdown")
+            .appname("rapd-notify")
+            .hint(Hint::Category("music".to_owned()))
+            .show().expect("Failed to send");
+    }
 }
