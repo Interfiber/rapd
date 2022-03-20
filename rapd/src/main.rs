@@ -3,6 +3,7 @@ mod config;
 mod db;
 mod enums;
 mod json;
+mod hook;
 mod metadata;
 mod player;
 #[cfg(feature = "plugins")]

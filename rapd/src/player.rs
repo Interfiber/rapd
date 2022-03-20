@@ -1,5 +1,6 @@
 use crate::db::get_current_file_symlink_location;
 use crate::enums::AudioStartStatus;
+use crate::enums::HookType;
 use crate::enums::PlayerState;
 use crate::requests::AudioPlayRequest;
 use crate::state::get_state;
@@ -48,6 +49,8 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
 
     // update the state
     set_state(PlayerState::Playing);
+    // fire the hook
+    crate::hook::fire_hook(HookType::PlayerStart);
     // sound update loop
     let mut state_recheck_ticker = 0;
     loop {

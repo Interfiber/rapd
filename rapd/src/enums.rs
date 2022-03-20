@@ -23,3 +23,16 @@ pub enum MusicDatabaseRebuildState {
     Rebuilt,
     PlayerRunning,
 }
+
+// Hook types
+pub enum HookType {
+    PlayerStart,
+    ServerShutdown,
+    Unknown
+}
+
+pub enum HookAddState {
+    Added,
+    FsError,
+    InvalidHookType
+}

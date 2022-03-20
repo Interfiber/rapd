@@ -1,10 +1,11 @@
+use crate::hook::add_hook;
 use crate::json::{
     parse_json_audio_play, parse_json_current_file, parse_json_metadata_get,
-    parse_json_metadata_set, parse_json_raw,
+    parse_json_metadata_set, parse_json_raw, parse_json_hook_add,
 };
 use crate::metadata::{get_title, set_title};
 use crate::player::{play_audio_from_request, stop_player};
-use crate::requests::{self, MetadataGetRequest, MetadataSetRequest};
+use crate::requests::{self, MetadataGetRequest, MetadataSetRequest, HookAddRequest, hook_add_request_string};
 use crate::requests::{audio_play_status_request_string, AudioPlayRequest, CurrentFileRequest};
 use crate::state::{get_state, state_to_string};
 use std::io::Write;
@@ -80,6 +81,7 @@ fn handle_client(stream: TcpStream) {
                         write_to_stream(stream, result);
                         break;
                     }
+                    // shutdown the server
                     "server_shutdown" => {
                         let result = json!({
                             "request_type": "Success",
@@ -110,6 +112,7 @@ fn handle_client(stream: TcpStream) {
                         );
                         break;
                     }
+                    // get the title of an audio file
                     "metadata_get_title" => {
                         let metadata_title_request: MetadataGetRequest =
                             parse_json_metadata_get(json.to_string());
@@ -122,6 +125,7 @@ fn handle_client(stream: TcpStream) {
                         write_to_stream(stream, response.to_string());
                         break;
                     }
+                    // set the title of an audio file
                     "metadata_set_title" => {
                         let metadata_set_request: MetadataSetRequest =
                             parse_json_metadata_set(json.to_string());
@@ -132,6 +136,14 @@ fn handle_client(stream: TcpStream) {
                             "message": "Set title"
                         });
                         write_to_stream(stream, response.to_string());
+                        break;
+                    }
+                    // add a hook
+                    "hook_add" => {
+                        let hook_add_request: HookAddRequest = parse_json_hook_add(json.to_string());
+                        let hook_add_state = add_hook(hook_add_request);
+                        let response = hook_add_request_string(hook_add_state);
+                        write_to_stream(stream, response);
                         break;
                     }
                     _ => {

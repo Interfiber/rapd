@@ -23,3 +23,8 @@ pub fn parse_json_metadata_set(data: String) -> MetadataSetRequest {
     let v: MetadataSetRequest = serde_json::from_str(&data).expect("Failed to parse json");
     return v;
 }
+
+pub fn parse_json_hook_add(data: String) -> HookAddRequest {
+    let v: HookAddRequest = serde_json::from_str(&data).expect("Failed to parse json");
+    return v;
+}

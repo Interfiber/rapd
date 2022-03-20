@@ -27,6 +27,13 @@ pub struct MetadataSetRequest {
     pub new_value: String,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct HookAddRequest {
+    pub request_type: String,
+    pub hook_type: String,
+    pub command: String
+}
+
 // functions
 pub fn get_request_rejected_string(why: &str) -> String {
     return json!({
@@ -118,5 +125,31 @@ pub fn db_rebuild_status_request_string(result: MusicDatabaseRebuildState) -> St
             })
             .to_string();
         }
+    }
+}
+pub fn hook_add_request_string(state: HookAddState) -> String {
+    match state {
+        HookAddState::Added => {
+            return json!({
+                "request_type": "Succeeded",
+                "error": false,
+                "message": "Hook added"
+            }).to_string();
+        },
+        HookAddState::FsError => {
+            return json!({
+                "request_type": "Failed",
+                "error": true,
+                "message": "Failed to add hook due to a file system error"
+            }).to_string();
+        },
+        HookAddState::InvalidHookType => {
+            return json!({
+                "request_type": "Failed",
+                "error": true,
+                "message": "Invalid hook type"
+            }).to_string();
+        }
+        _ => unreachable!()
     }
 }
