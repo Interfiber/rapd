@@ -1,5 +1,6 @@
 use crate::db::get_current_file_symlink_location;
-use crate::enums;
+use crate::enums::{self, HookType};
+use crate::hook::fire_hook;
 use crate::state;
 use std::path::Path;
 
@@ -41,7 +42,8 @@ pub fn shutdown() {
     state::set_state(enums::PlayerState::Killed);
     info!("Removing symlink...");
     remove_current_symlink();
-    info!("Fireing shutdown hook...");
+    info!("Firing server shutdown hook");
+    fire_hook(HookType::ServerShutdown);
     info!("Exiting");
     std::process::exit(1);
 }
