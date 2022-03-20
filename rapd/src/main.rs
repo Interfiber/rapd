@@ -6,10 +6,6 @@ mod hook;
 mod json;
 mod metadata;
 mod player;
-#[cfg(feature = "plugins")]
-mod plugin_api;
-#[cfg(feature = "plugins")]
-mod plugins;
 mod requests;
 mod server;
 mod state;

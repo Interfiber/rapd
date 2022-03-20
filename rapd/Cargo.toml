@@ -28,12 +28,3 @@ audiotags = "0.2.7182"
 xdg = "2.4.0" # Get XDG base dir folders
 ctrlc = "3.2.1" # Listen for kill events
 home = "0.5.3" # Get the home folder
-# plugin
-notify-rust = { version = "4", optional = true } # send notifications
-discord-rich-presence = { version = "0.1.8", optional = true } # set discord rich presence
-
-# Features
-[features]
-plugins = []
-notifyplugin = ["plugins", "notify-rust"]
-discordplugin = ["plugins", "discord-rich-presence"]
