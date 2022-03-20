@@ -25,6 +25,7 @@ pub enum MusicDatabaseRebuildState {
 }
 
 // Hook types
+#[derive(PartialEq, Eq)]
 pub enum HookType {
     PlayerStart,
     ServerShutdown,

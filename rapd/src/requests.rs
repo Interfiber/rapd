@@ -153,6 +153,5 @@ pub fn hook_add_request_string(state: HookAddState) -> String {
             })
             .to_string();
         }
-        _ => unreachable!(),
     }
 }

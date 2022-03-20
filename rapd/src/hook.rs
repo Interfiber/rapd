@@ -9,6 +9,9 @@ fn hook_type_to_hook(hook_type: String) -> HookType {
         "player_start" => {
             return HookType::PlayerStart;
         }
+        "server_shutdown" => {
+            return HookType::ServerShutdown;
+        }
         _ => {
             error!("Invalid hook");
             return HookType::Unknown;
@@ -43,16 +46,11 @@ fn add_hook_db(name: String, command: String) -> HookAddState {
 pub fn add_hook(hook_request: HookAddRequest) -> HookAddState {
     info!("Adding hook with type: {}", hook_request.hook_type);
     let hook = hook_type_to_hook(hook_request.hook_type.to_string());
-    match hook {
-        HookType::Unknown => {
-            error!("Not adding hook, invalid hook type");
-            return HookAddState::InvalidHookType;
-        }
-        HookType::PlayerStart => {
-            return add_hook_db(hook_request.hook_type, hook_request.command);
-        }
-        _ => unreachable!(),
+    if hook == HookType::Unknown {
+        error!("Invalid hook type!");
+        return HookAddState::InvalidHookType;
     }
+    return add_hook_db(hook_request.hook_type, hook_request.command);
 }
 
 fn run_command(cmd: String) {
@@ -75,6 +73,18 @@ pub fn fire_hook(hook_type: HookType) {
                 return;
             } else {
                 let cmd = db_content["hook_player_start"]
+                    .to_string()
+                    .replace("\"", "");
+                info!("Running hook command: {}", cmd);
+                run_command(cmd);
+            }
+        }
+        HookType::ServerShutdown => {
+            if db_content.get("hook_server_shutdown").is_none() {
+                warn!("No such hook!");
+                return;
+            } else {
+                let cmd = db_content["hook_server_shutdown"]
                     .to_string()
                     .replace("\"", "");
                 info!("Running hook command: {}", cmd);

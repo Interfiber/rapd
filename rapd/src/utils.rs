@@ -41,6 +41,7 @@ pub fn shutdown() {
     state::set_state(enums::PlayerState::Killed);
     info!("Removing symlink...");
     remove_current_symlink();
+    info!("Fireing shutdown hook...");
     info!("Exiting");
     std::process::exit(1);
 }
