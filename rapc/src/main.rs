@@ -83,6 +83,11 @@ fn main() {
                 .arg(arg!(<COMMAND> "Command to execute with /bin/sh on hook fire")),
         )
         .subcommand(
+            App::new("hook_add_player_pause")
+                .about("Add a hook that fires when the player pauses")
+                .arg(arg!(<COMMAND> "Command to execute with /bin/sh on hook fire")),
+        )
+        .subcommand(
             App::new("metadata_set_title")
                 .about("Set the title of a music file")
                 .arg(arg!(<PATH> "Path to the file that will be effected"))
@@ -149,6 +154,10 @@ fn main() {
         Some(("hook_add_server_shutdown", sub_matches)) => {
             let cmd = sub_matches.value_of("COMMAND").unwrap().to_string();
             hook::add_server_shutdown(cmd);
+        }
+        Some(("hook_add_player_pause", sub_matches)) => {
+            let cmd = sub_matches.value_of("COMMAND").unwrap().to_string();
+            hook::add_player_pause(cmd);
         }
         _ => unreachable!(),
     }

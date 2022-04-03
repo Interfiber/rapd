@@ -19,6 +19,12 @@ pub fn state_string_to_state(state_string: String) -> Option<PlayerState> {
         "playerstate.rebuilding" => {
             return Some(PlayerState::Rebuilding);
         }
+        "playerstate.paused" => {
+            return Some(PlayerState::Paused);
+        }
+        "playerstate.unpaused" => {
+            return Some(PlayerState::Unpaused);
+        }
         _ => {
             error!("statefile is empty, or corrupted!");
             return None;
@@ -48,6 +54,14 @@ pub fn state_to_string(state: PlayerState) -> String {
         PlayerState::Stop => {
             debug!("State match is playerstate.stop");
             return String::from("playerstate.stop");
+        }
+        PlayerState::Paused => {
+            debug!("State match is playerstate.paused");
+            return String::from("playerstate.paused");
+        }
+        PlayerState::Unpaused => {
+            debug!("State match is playerstate.unpaused");
+            return String::from("playerstate.unpaused");
         }
     }
 }

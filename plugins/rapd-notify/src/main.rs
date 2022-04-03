@@ -1,6 +1,6 @@
-use notify_rust::{Notification, Hint};
-use std::env;
+use notify_rust::{Hint, Notification};
 use serde_json::Value;
+use std::env;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Write;
@@ -17,10 +17,8 @@ fn get_playing_file() -> String {
     return parsed["message"].to_string().replace("\"", "");
 }
 
-
-
 fn main() {
-    let args: Vec<String> = env::args().collect(); 
+    let args: Vec<String> = env::args().collect();
     println!("{:#?}", args);
     println!("{}", args.len());
     if args.len() == 1 {
@@ -29,13 +27,31 @@ fn main() {
             .body(&format!("Playing file: {}", get_playing_file()))
             .appname("rapd-notify")
             .hint(Hint::Category("music".to_owned()))
-            .show().expect("Failed to send"); 
+            .show()
+            .expect("Failed to send");
     } else if args.len() == 2 && args[1] == "shutdown" {
         Notification::new()
             .summary("Rapd server")
             .body("The rapd server has shutdown")
             .appname("rapd-notify")
             .hint(Hint::Category("music".to_owned()))
-            .show().expect("Failed to send");
+            .show()
+            .expect("Failed to send");
+    } else if args.len() == 2 && args[1] == "pause" {
+        Notification::new()
+            .summary("Rapd server")
+            .body("The player has been paused")
+            .appname("rapd-notify")
+            .hint(Hint::Category("music".to_owned()))
+            .show()
+            .expect("Failed to send");
+    } else if args.len() == 2 && args[1] == "unpause" {
+        Notification::new()
+            .summary("Rapd server")
+            .body("The player has been unpaused")
+            .appname("rapd-notify")
+            .hint(Hint::Category("music".to_owned()))
+            .show()
+            .expect("Failed to send");
     }
 }

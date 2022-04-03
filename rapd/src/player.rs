@@ -54,7 +54,7 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
     // sound update loop
     let mut state_recheck_ticker = 0;
     loop {
-        if sink.empty() {
+        if sink.empty() && !sink.is_paused() {
             break;
         }
         state_recheck_ticker += 1;
@@ -65,6 +65,22 @@ pub fn play_audio_file(file: &str, loop_audio: bool) {
                 sink.stop();
                 info!("Breaking...");
                 break;
+            } else if get_state() == PlayerState::Paused {
+                if !sink.is_paused() {
+                    info!("Got pause request in state file, pausing player");
+                    sink.pause();
+                    // fire hook
+                    crate::hook::fire_hook(HookType::PlayerPause);
+                }
+            } else if get_state() == PlayerState::Unpaused {
+                if sink.is_paused() {
+                    info!("Got unpause request in state file, unpausing player");
+                    sink.play();
+                    // set state to playing
+                    set_state(PlayerState::Playing);
+                    // fire hook
+                    crate::hook::fire_hook(HookType::PlayerUnpause);
+                }
             }
             state_recheck_ticker = 0;
         }

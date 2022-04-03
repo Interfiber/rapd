@@ -9,6 +9,12 @@ fn hook_type_to_hook(hook_type: String) -> HookType {
         "player_start" => {
             return HookType::PlayerStart;
         }
+        "player_pause" => {
+            return HookType::PlayerPause;
+        }
+        "player_unpause" => {
+            return HookType::PlayerUnpause;
+        }
         "server_shutdown" => {
             return HookType::ServerShutdown;
         }
@@ -85,6 +91,30 @@ pub fn fire_hook(hook_type: HookType) {
                 return;
             } else {
                 let cmd = db_content["hook_server_shutdown"]
+                    .to_string()
+                    .replace("\"", "");
+                info!("Running hook command: {}", cmd);
+                run_command(cmd);
+            }
+        }
+        HookType::PlayerPause => {
+            if db_content.get("hook_player_pause").is_none() {
+                warn!("No such hook!");
+                return;
+            } else {
+                let cmd = db_content["hook_player_pause"]
+                    .to_string()
+                    .replace("\"", "");
+                info!("Running hook command: {}", cmd);
+                run_command(cmd);
+            }
+        }
+        HookType::PlayerUnpause => {
+            if db_content.get("hook_player_unpause").is_none() {
+                warn!("No such hook");
+                return;
+            } else {
+                let cmd = db_content["hook_player_unpause"]
                     .to_string()
                     .replace("\"", "");
                 info!("Running hook command: {}", cmd);

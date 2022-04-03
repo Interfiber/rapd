@@ -21,6 +21,12 @@ fn get_readable_state(state: String) -> String {
         "playerstate.stop" => {
             return "Player is stopping".to_string();
         }
+        "playerstate.paused" => {
+            return "Player is pausing".to_string();
+        }
+        "playerstate.unpaused" => {
+            return "Player is unpausing".to_string();
+        }
         _ => {
             return "Unknown State(Client)".to_string();
         }

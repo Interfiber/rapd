@@ -149,6 +149,15 @@ fn handle_client(stream: TcpStream) {
                         write_to_stream(stream, response);
                         break;
                     }
+                    // pause the player
+                    "pause_player" => {
+                        crate::state::set_state(crate::enums::PlayerState::Paused);
+                        break;
+                    }
+                    "unpause_player" => {
+                        crate::state::set_state(crate::enums::PlayerState::Unpaused);
+                        break;
+                    }
                     _ => {
                         warn!("Rejecting request: request type invalid");
                         write_to_stream(
