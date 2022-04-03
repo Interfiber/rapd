@@ -31,9 +31,7 @@ pub fn get_music_db() -> Vec<Value> {
 
 // print the contents of the music db
 pub fn print_music_db() {
-    println!("Querying database...");
     let music = get_music_db();
-    println!("Query results:");
     let mut iterator = 1;
     for file in music.iter() {
         let file_path = file.to_string().replace("\"", "");

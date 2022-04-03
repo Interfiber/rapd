@@ -1,4 +1,7 @@
 use crate::utils::{get_server_stream, read_from_server};
+use std::io::BufRead;
+use std::io::BufReader;
+use std::net::TcpStream;
 use serde_json::Value;
 use std::io::Write;
 
@@ -98,4 +101,22 @@ pub fn shutdown_server() {
     } else {
         println!("Server: {}", result_json["message"].to_string());
     }
+}
+
+pub fn pause_player() {
+    let mut stream = TcpStream::connect("127.0.0.1:8932").expect("Failed to connect");
+    let _len = stream.write(b"{\"request_type\":\"pause_player\"}\n");
+    let mut reader = BufReader::new(stream);
+    let mut line = String::new();
+    let _len = reader.read_line(&mut line);
+    println!("Got from server: {}", &line);
+}
+
+pub fn unpause_player() {
+    let mut stream = TcpStream::connect("127.0.0.1:8932").expect("Failed to connect");
+    stream.write(b"{\"request_type\":\"unpause_player\"}\n").expect("Failed to write to stream");
+    let mut reader = BufReader::new(stream);
+    let mut line = String::new();
+    reader.read_line(&mut line).expect("Failed to read line from stream");
+    println!("{}", &line);
 }

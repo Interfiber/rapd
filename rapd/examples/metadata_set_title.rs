@@ -5,7 +5,7 @@ use std::net::TcpStream;
 
 fn main() {
     let mut stream = TcpStream::connect("127.0.0.1:8932").expect("Failed to connect");
-    let len = stream.write(b"{\"request_type\":\"metadata_set_title\", \"path\": \"test.mp3\", \"new_value\": \"testing 123\"}\n");
+    let len = stream.write(b"{\"request_type\":\"metadata_set\", \"metadata_type\": \"title\", \"path\": \"test.mp3\", \"new_value\": \"testing 123\"}\n");
     let mut reader = BufReader::new(stream);
     let mut line = String::new();
     let len = reader.read_line(&mut line);

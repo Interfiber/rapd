@@ -32,6 +32,8 @@ fn main() {
         .subcommand(App::new("player_stop").about("Stop the player"))
         .subcommand(App::new("db_print").about("Print the files in the music database"))
         .subcommand(App::new("db_rebuild").about("Rebuild the music database"))
+        .subcommand(App::new("player_pause").about("Pause the player"))
+        .subcommand(App::new("player_unpause").about("Unpause the player"))
         .subcommand(
             App::new("db_select")
                 .about("Select a file to play from the music database")
@@ -86,6 +88,11 @@ fn main() {
             App::new("hook_add_player_pause")
                 .about("Add a hook that fires when the player pauses")
                 .arg(arg!(<COMMAND> "Command to execute with /bin/sh on hook fire")),
+        )
+        .subcommand(
+            App::new("hook_add_player_unpause")
+                .about("Add a hook that fires when the player unpauses")
+                .arg(arg!(<COMMAND> "Command to execute with /bin/sh on hook fire"))
         )
         .subcommand(
             App::new("metadata_set_title")
@@ -158,6 +165,16 @@ fn main() {
         Some(("hook_add_player_pause", sub_matches)) => {
             let cmd = sub_matches.value_of("COMMAND").unwrap().to_string();
             hook::add_player_pause(cmd);
+        },
+        Some(("hook_add_player_unpause", sub_matches)) => {
+            let cmd = sub_matches.value_of("COMMAND").unwrap().to_string();
+            hook::add_player_unpause(cmd);
+        }
+        Some(("player_pause", _)) => {
+            player::pause_player();
+        },
+        Some(("player_unpause", _)) => {
+            player::unpause_player();
         }
         _ => unreachable!(),
     }
