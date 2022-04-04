@@ -1,11 +1,11 @@
 use crate::enums::MetadataEditState;
-use crate::requests::{MetadataSetRequest, MetadataGetRequest};
+use crate::requests::{MetadataGetRequest, MetadataSetRequest};
 use audiotags::Tag;
 // returns the title of the sound file given, unknown if empty
 pub fn get_title(path: String) -> String {
-    if !std::path::Path::new(&path).exists(){
+    if !std::path::Path::new(&path).exists() {
         warn!("Failed to find file");
-        return "unknown".to_string(); 
+        return "unknown".to_string();
     }
     info!("Reading metadata from on disk file...");
     let tag = Tag::new()
@@ -23,7 +23,7 @@ pub fn get_title(path: String) -> String {
 
 pub fn set_title(path: String, value: String) -> MetadataEditState {
     info!("Attempting to set title of {}", path);
-    if !std::path::Path::new(&path).exists(){
+    if !std::path::Path::new(&path).exists() {
         warn!("Failed to find file");
         return MetadataEditState::FileReadError;
     }
@@ -68,7 +68,7 @@ pub fn set_author(path: String, value: String) -> MetadataEditState {
 }
 
 pub fn get_author(path: String) -> String {
-    if !std::path::Path::new(&path).exists(){
+    if !std::path::Path::new(&path).exists() {
         warn!("Failed to find file");
         return "unknown".to_string();
     }
@@ -89,10 +89,10 @@ pub fn set_from_request(request: MetadataSetRequest) -> MetadataEditState {
     match request.metadata_type.as_str() {
         "title" => {
             return set_title(request.path, request.new_value);
-        },
+        }
         "author" => {
             return set_author(request.path, request.new_value);
-        },
+        }
         _ => {
             error!("Invalid metadata type");
             return MetadataEditState::InvalidType;
@@ -104,10 +104,10 @@ pub fn get_from_request(request: MetadataGetRequest) -> String {
     match request.metadata_type.as_str() {
         "title" => {
             return get_title(request.path);
-        },
+        }
         "author" => {
             return get_author(request.path);
-        },
+        }
         _ => {
             error!("Invalid metadata type");
             return "unknown".to_string();

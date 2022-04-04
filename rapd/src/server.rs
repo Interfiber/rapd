@@ -7,7 +7,10 @@ use crate::player::{play_audio_from_request, stop_player};
 use crate::requests::{
     self, hook_add_request_string, HookAddRequest, MetadataGetRequest, MetadataSetRequest,
 };
-use crate::requests::{audio_play_status_request_string, AudioPlayRequest, CurrentFileRequest, metadata_edit_request_string};
+use crate::requests::{
+    audio_play_status_request_string, metadata_edit_request_string, AudioPlayRequest,
+    CurrentFileRequest,
+};
 use crate::state::{get_state, state_to_string};
 use std::io::Write;
 use std::io::{BufRead, BufReader};
@@ -115,23 +118,26 @@ fn handle_client(stream: TcpStream) {
                     }
                     // set metadata for a file
                     "metadata_set" => {
-                        let metadata_set_request: MetadataSetRequest = parse_json_metadata_set(json.to_string());
+                        let metadata_set_request: MetadataSetRequest =
+                            parse_json_metadata_set(json.to_string());
                         let stat = crate::metadata::set_from_request(metadata_set_request);
                         write_to_stream(stream, metadata_edit_request_string(stat));
                         break;
-                    },
+                    }
                     // get the metadata for a file
                     "metadata_get" => {
-                        let metadata_get_request: MetadataGetRequest = parse_json_metadata_get(json.to_string());
+                        let metadata_get_request: MetadataGetRequest =
+                            parse_json_metadata_get(json.to_string());
                         let result = crate::metadata::get_from_request(metadata_get_request);
                         let response = json!({
                             "request_type": "Success",
                             "error": false,
                             "message": result
-                        }).to_string();
+                        })
+                        .to_string();
                         write_to_stream(stream, response);
                         break;
-                    },
+                    }
                     // add a hook
                     "hook_add" => {
                         let hook_add_request: HookAddRequest =

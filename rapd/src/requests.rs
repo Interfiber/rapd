@@ -165,28 +165,32 @@ pub fn metadata_edit_request_string(state: MetadataEditState) -> String {
                 "request_type": "Failed",
                 "error": true,
                 "message": "Failed to set metadata because the file was unable to be read from disk"
-            }).to_string();
-        },
+            })
+            .to_string();
+        }
         MetadataEditState::MetadataWriteError => {
             return json!({
                 "request_type": "Failed",
                 "error": true,
                 "message": "Failed to set metadata because it failed to write to disk"
-            }).to_string();
-        },
+            })
+            .to_string();
+        }
         MetadataEditState::InvalidType => {
             return json!({
                 "request_type": "Failed",
                 "error": true,
                 "message": "Failed to set metadata because the metadata type was invalid"
-            }).to_string();
-        },
+            })
+            .to_string();
+        }
         MetadataEditState::Wrote => {
             return json!({
                 "request_type": "Succeeded",
                 "error": false,
                 "message": "Updated file metadata"
-            }).to_string();
+            })
+            .to_string();
         }
     }
 }

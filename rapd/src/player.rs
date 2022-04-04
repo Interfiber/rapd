@@ -15,8 +15,6 @@ use std::thread::Builder;
 use std::time::Duration;
 use std::{fs::File, io::BufReader};
 
-// NOTE: Cleanup code after audio backend change
-
 // play an audio file
 pub fn play_audio_file(file: &str, loop_audio: bool) {
     // check if we already have an audio file playing

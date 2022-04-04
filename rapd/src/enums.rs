@@ -46,5 +46,5 @@ pub enum MetadataEditState {
     Wrote,
     FileReadError,
     MetadataWriteError,
-    InvalidType
+    InvalidType,
 }

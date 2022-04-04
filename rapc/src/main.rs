@@ -92,7 +92,7 @@ fn main() {
         .subcommand(
             App::new("hook_add_player_unpause")
                 .about("Add a hook that fires when the player unpauses")
-                .arg(arg!(<COMMAND> "Command to execute with /bin/sh on hook fire"))
+                .arg(arg!(<COMMAND> "Command to execute with /bin/sh on hook fire")),
         )
         .subcommand(
             App::new("metadata_set_title")
@@ -165,14 +165,14 @@ fn main() {
         Some(("hook_add_player_pause", sub_matches)) => {
             let cmd = sub_matches.value_of("COMMAND").unwrap().to_string();
             hook::add_player_pause(cmd);
-        },
+        }
         Some(("hook_add_player_unpause", sub_matches)) => {
             let cmd = sub_matches.value_of("COMMAND").unwrap().to_string();
             hook::add_player_unpause(cmd);
         }
         Some(("player_pause", _)) => {
             player::pause_player();
-        },
+        }
         Some(("player_unpause", _)) => {
             player::unpause_player();
         }
