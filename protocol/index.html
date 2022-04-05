@@ -402,15 +402,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#metadata_set_title" class="md-nav__link">
-    metadata_set_title
+  <a href="#metadata_get" class="md-nav__link">
+    metadata_get
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#metadata_get_title" class="md-nav__link">
-    metadata_get_title
+  <a href="#metadata_set" class="md-nav__link">
+    metadata_set
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hook_add" class="md-nav__link">
+    hook_add
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#player_pause" class="md-nav__link">
+    player_pause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#player_unpause" class="md-nav__link">
+    player_unpause
   </a>
   
 </li>
@@ -511,15 +532,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#metadata_set_title" class="md-nav__link">
-    metadata_set_title
+  <a href="#metadata_get" class="md-nav__link">
+    metadata_get
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#metadata_get_title" class="md-nav__link">
-    metadata_get_title
+  <a href="#metadata_set" class="md-nav__link">
+    metadata_set
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hook_add" class="md-nav__link">
+    hook_add
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#player_pause" class="md-nav__link">
+    player_pause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#player_unpause" class="md-nav__link">
+    player_unpause
   </a>
   
 </li>
@@ -638,35 +680,81 @@
   &quot;request_type&quot;: &quot;Succeeded/??&quot;
 }
 </code></pre>
-<h2 id="metadata_set_title">metadata_set_title</h2>
-<p>About: Sets the title for an audio file</p>
-<p>Expects: </p>
-<pre><code class="language-json">{
-  &quot;request_type&quot;: &quot;metadata_set_title&quot;,
-  &quot;path&quot;: &quot;path/to/music/file.mp3&quot;,
-  &quot;new_value&quot;: &quot;Title of music&quot;
-}
-</code></pre>
-<p>Returns: </p>
-<pre><code class="language-json">{
-  &quot;error&quot;: true/false,
-  &quot;message&quot;: &quot;Set title/??&quot;,
-  &quot;request_type&quot;: &quot;Success/??&quot;
-}
-</code></pre>
-<h2 id="metadata_get_title">metadata_get_title</h2>
-<p>About: Gets the title from an audio file</p>
+<h2 id="metadata_get">metadata_get</h2>
+<p>About: Gets a supported metadata value from a file</p>
 <p>Expects:</p>
 <pre><code class="language-json">{
- &quot;request_type&quot;: &quot;metadata_get_title&quot;,
- &quot;path&quot;: &quot;/path/to/audio/file.mp3&quot;
+  &quot;request_type&quot;: &quot;metadata_get&quot;,
+  &quot;metadata_type&quot;: &quot;title/author&quot;,
+  &quot;path&quot;: &quot;/path/to/audio/file.mp3&quot;
 }
 </code></pre>
-<p>Returns: </p>
+<p>Returns:</p>
 <pre><code class="language-json">{
+  &quot;request_type&quot;: &quot;Success/??&quot;,
   &quot;error&quot;: true/false,
-  &quot;message&quot;: &quot;title of audio&quot;,
-  &quot;request_type&quot;: &quot;Success&quot;
+  &quot;message&quot;: &quot;author of audio/unknown&quot;
+}
+</code></pre>
+<h2 id="metadata_set">metadata_set</h2>
+<p>About: Sets a supported metadata value for a file</p>
+<p>Expects:</p>
+<pre><code class="language-json">{
+  &quot;request_type&quot;: &quot;metadata_set&quot;,
+  &quot;metadata_type&quot;: &quot;title/author&quot;,
+  &quot;path&quot;: &quot;/path/to/audio/file.mp3&quot;,
+  &quot;new_value&quot;: &quot;epic author name&quot;
+}
+</code></pre>
+<p>Returns:</p>
+<pre><code class="language-json">{
+  &quot;request_type&quot;: &quot;Success/??&quot;,
+  &quot;error&quot;: true/false,
+  &quot;message&quot;: &quot;Updated file metadata/??&quot;
+}
+</code></pre>
+<h2 id="hook_add">hook_add</h2>
+<p>About: Adds a hook to the rapd database</p>
+<p>Expects:</p>
+<pre><code class="language-json">{
+  &quot;request_type&quot;: &quot;hook_add&quot;,
+  &quot;hook_type&quot;: &quot;player_start/...&quot;,
+  &quot;command&quot;: &quot;command/to/execute&quot;
+}
+</code></pre>
+<p>Returns:</p>
+<pre><code class="language-json">{
+  &quot;request_type&quot;: &quot;Succeeded/??&quot;,
+  &quot;error&quot;: true/false
+  &quot;message&quot;: &quot;Hook added/??&quot;
+}
+</code></pre>
+<h2 id="player_pause">player_pause</h2>
+<p>About: Pauses the music player</p>
+<p>Expects:</p>
+<pre><code class="language-json">{
+  &quot;request_type&quot;: &quot;pause_player&quot;
+}
+</code></pre>
+<p>Returns:</p>
+<pre><code class="language-json">{
+  &quot;request_type&quot;: &quot;Success/??&quot;
+  &quot;error&quot;: true/false,
+  &quot;message: &quot;Paused player/??&quot;
+}
+</code></pre>
+<h2 id="player_unpause">player_unpause</h2>
+<p>About: Unpauses, or resumes the player</p>
+<p>Expects:</p>
+<pre><code class="language-json">{
+  &quot;request_type&quot;: &quot;unpause_player&quot;
+}
+</code></pre>
+<p>Returns:</p>
+<pre><code class="language-json">{
+  &quot;request_type&quot;: &quot;Success&quot;,
+  &quot;error&quot;: true/false,
+  &quot;message&quot;: &quot;Unpaused player&quot;
 }
 </code></pre>
 

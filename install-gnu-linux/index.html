@@ -422,10 +422,11 @@ First clone the source repo with git:</p>
 </code></pre>
 <p>Then install <a href="https://rustup.rs">rustup</a> and switch to the latest version like this: <code>rustup default stable</code>.
 Then cd into the cloned directory and run the build:</p>
-<pre><code class="language-bash"># add features like this:
-# export RAPD_EXTRA_FEATURES=&quot;notifyplugin,discordplugin&quot;
-sh install.sh --build-release
-sh install.sh --install-release
+<pre><code class="language-bash">cargo build --release
+</code></pre>
+<p>Then install the <code>rapd</code>, and <code>rapc</code> binarys with this:</p>
+<pre><code class="language-bash">sudo cp target/release/rapd /usr/bin/rapd
+sudo cp target/release/rapc /usr/bin/rapc
 </code></pre>
 <h2 id="installing-from-the-aur">Installing from the AUR</h2>
 <p>RAPD from the aur uses the latest release of rapd from github, to install it use an AUR helper like below:</p>
