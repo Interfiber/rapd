@@ -131,43 +131,104 @@ Returns:
 }
 ```
 
-## metadata_set_title
-About: Sets the title for an audio file
-
-Expects: 
-```json
-{
-  "request_type": "metadata_set_title",
-  "path": "path/to/music/file.mp3",
-  "new_value": "Title of music"
-}
-```
-
-Returns: 
-```json
-{
-  "error": true/false,
-  "message": "Set title/??",
-  "request_type": "Success/??"
-}
-```
-
-## metadata_get_title
-About: Gets the title from an audio file
+## metadata_get
+About: Gets a supported metadata value from a file
 
 Expects:
 ```json
 {
- "request_type": "metadata_get_title",
- "path": "/path/to/audio/file.mp3"
+  "request_type": "metadata_get",
+  "metadata_type": "title/author",
+  "path": "/path/to/audio/file.mp3"
 }
 ```
 
-Returns: 
+Returns:
 ```json
 {
+  "request_type": "Success/??",
   "error": true/false,
-  "message": "title of audio",
-  "request_type": "Success"
+  "message": "author of audio/unknown"
+}
+```
+
+## metadata_set
+About: Sets a supported metadata value for a file
+
+Expects:
+```json
+{
+  "request_type": "metadata_set",
+  "metadata_type": "title/author",
+  "path": "/path/to/audio/file.mp3",
+  "new_value": "epic author name"
+}
+```
+
+Returns:
+```json
+{
+  "request_type": "Success/??",
+  "error": true/false,
+  "message": "Updated file metadata/??"
+}
+```
+
+## hook_add
+About: Adds a hook to the rapd database
+
+Expects:
+```json
+{
+  "request_type": "hook_add",
+  "hook_type": "player_start/...",
+  "command": "command/to/execute"
+}
+```
+
+Returns:
+```json
+{
+  "request_type": "Succeeded/??",
+  "error": true/false
+  "message": "Hook added/??"
+}
+```
+
+## player_pause
+About: Pauses the music player
+
+Expects:
+```json
+{
+  "request_type": "pause_player"
+}
+```
+
+Returns:
+```json
+{
+  "request_type": "Success/??"
+  "error": true/false,
+  "message: "Paused player/??"
+}
+```
+
+## player_unpause
+About: Unpauses, or resumes the player
+
+Expects:
+```json
+{
+  "request_type": "unpause_player"
+}
+```
+
+Returns:
+```json
+{
+  "request_type": "Success",
+  "error": true/false,
+  "message": "Unpaused player"
 }
 ```

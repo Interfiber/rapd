@@ -10,9 +10,11 @@ Then install [rustup](https://rustup.rs) and switch to the latest version like t
 Then cd into the cloned directory and run the build:
 ```bash
 cargo build --release
-sudo cp ./target/release/rapd /usr/bin/rapd
-sudo cp ./target/release/rapc /usr/bin/rapc
-# RAPD notify plugin: sudo cp ./target/release/rapd-notify /usr/local/bin/rapd-notify
+```
+Then install the ```rapd```, and ```rapc``` binarys with this:
+```bash
+sudo cp target/release/rapd /usr/bin/rapd
+sudo cp target/release/rapc /usr/bin/rapc
 ```
 
 ## Installing from the AUR
