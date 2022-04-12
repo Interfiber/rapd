@@ -1,0 +1,37 @@
+.TH rapd 1  "March 20, 2022" "version 0.1" "USER COMMANDS"
+.SH NAME
+rapd - Rust Audio Player Daemon
+.SH DESCRIPTION
+Rapd is an audio player daemon, you can find out more about it at: https://www.interfiber.dev/rapd
+
+.SH SYNOPSIS
+.B rapd
+
+.SH FILES
+.INDENT 0.0
+.TP
+.B \fB$XDG_CONFIG_DIR/rapd/config.toml\fP
+Config for the RAPD server
+.TP
+.B \fB$XDG_DATA_DIR/share/rapd\fP
+Data directory for RAPD
+.TP
+.B \fB$XDG_DATA_DIR/share/rapd/db.json\fP
+Stores the music database, and server hooks. Do not query this manually, instead use the RAPD server.
+.TP
+.B \fB$XDG_DATA_DIR/share/rapd/statefile\fP
+Stores the current state of the RAPD server. Do not edit this manually, instead use the RAPD server.
+.TP
+.B \fB$XDG_DATA_DIR/share/rapd/currentfile.symlink\fP
+Symlink to the current playing file. Do not edit this manually, instead use the RAPD server.
+.UNIDENT
+
+.SH BUGS
+.INDENT 0.0
+Report all bugs at https://github.com/Interfiber/rapd
+.UNIDENT
+
+.SH AUTHOR
+Interfiber <webmaster@interfiber.dev>
+.SH SEE ALSO
+rapc(1)
