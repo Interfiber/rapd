@@ -1,16 +1,18 @@
 # RAPD
-The Rust Audio Player Daemon
+Rust audio player daemon 2.0
 
-[![Documentation Status](https://readthedocs.org/projects/rapd/badge/?version=latest)](https://rapd.readthedocs.io/en/latest/?badge=latest)
+## Changes in version 2.0
 
-[![asciicast](https://asciinema.org/a/468543.svg)](https://asciinema.org/a/468543)
-
-## What rapd trys to do
-Rapd is not a spotify client, or an advanced music player. Its an audio/music daemon that runs in the background that accepts connections via its TCP socket.
-Rapd aims to be a fast, lightweight, free, and open-source program to play music or audio on you're machine and thats it.
-
-## Why not mpd?
-Mpd is a cool concept, if it worked(for me). It had weird permisson problems with my music folder, and other things that bugged me.
-
-## Documentation
-You can find the docs [here](https://www.interfiber.dev/rapd )
+- Better code readability
+- No need to make multiple connections to perform diffrent tasks, the server can keep the connection open after a response
+- No on-disk statefile, which removes the chance of state errors, this also allows the player to pause/stop/begin the audio faster
+- Better request/response format
+- No use of rodio, symphonia is used for audio decoding instead
+- Scrubbing (TODO)
+- Get place in song (TODO)
+- Better metadata support (TODO)
+- Built in notifications (TODO)
+- Configure during runtime, or with startup script via rapc (TODO)
+- Better rapc code readability (TODO)
+- More verbose rapc command line interface (TODO)
+- Built in discord RPC (TODO)

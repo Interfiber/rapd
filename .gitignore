@@ -1,3 +1,10 @@
 /target
 rapd/sample.mp3
 plugins/rapd-mpris/node_modules
+
+
+# Added by cargo
+#
+# already existing elements were commented out
+
+#/target
