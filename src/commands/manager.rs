@@ -6,7 +6,7 @@ use crate::json::{RapdCommandResponse, RapdMessage};
 
 use super::{
     GetLengthCommand, GetStateCommand, GetTimeCommand, PingCommand, PlayFileCommand, RapdCommand,
-    StopCommand, TogglePauseCommand,
+    StopCommand, TogglePauseCommand, GetFileCommand,
 };
 
 pub struct RapdCommandManager {
@@ -52,5 +52,6 @@ pub fn init_manager(manager: &mut RapdCommandManager) {
     manager.add_cmd("player_stop", StopCommand {});
     manager.add_cmd("player_toggle_pause", TogglePauseCommand {});
     manager.add_cmd("player_length", GetLengthCommand {});
-    manager.add_cmd("player_time", GetTimeCommand {})
+    manager.add_cmd("player_time", GetTimeCommand {});
+    manager.add_cmd("player_file", GetFileCommand {});
 }

@@ -41,6 +41,7 @@ pub struct RapdPlayerTime {
 pub struct RapdPlayer {
     state: PlayerState,
     time: RapdPlayerTime,
+    file: String,
     metadata: Option<RapdMetadata>,
 }
 
@@ -54,6 +55,7 @@ impl RapdPlayer {
                 second: 0,
             },
             metadata: Default::default(),
+            file: String::from("No file")
         }
     }
 
@@ -61,13 +63,17 @@ impl RapdPlayer {
     /// playing
     fn play_file(&mut self, file: &str, loop_audio: bool) {
         // stop any playing audio
-        if self.state != PlayerState::Idle {
+        if self.state == PlayerState::Idle {
             self.stop_player();
             std::thread::sleep(Duration::from_millis(100)); // hold up, wait a 100 milliseconds.
                                                             // This isnt the best method for making
                                                             // sure the player stops before we
                                                             // start playing audio, but I dont
                                                             // care. Change it if you want
+        } else if self.state == PlayerState::Paused {
+            self.unpause_player();
+            self.stop_player();
+            std::thread::sleep(Duration::from_millis(500));
         }
 
         // load file
@@ -81,6 +87,8 @@ impl RapdPlayer {
             min: 0,
             second: 0,
         };
+
+        self.file = String::from(file);
 
         let audio_file = file.to_string();
 
@@ -96,19 +104,25 @@ impl RapdPlayer {
                 b.load_file(audio_file.to_string());
 
                 if loop_audio {
+                    // play audio for the first time
                     b.play_audio();
 
                     while !b.stopped {
+                        // reload file into memory
                         b.load_file(audio_file.to_string());
 
+                        // replay the audio
                         b.play_audio();
                     }
                 } else {
+                    // play audio
                     b.play_audio();
                 }
 
+                // update states
                 b.paused = false;
                 b.stopped = true;
+
                 info!("Audio playback done");
             })
             .expect("Failed to spawn audio player thread");
@@ -133,16 +147,23 @@ impl RapdPlayer {
         &self.state
     }
 
+    /// Get the current playing file
+    pub fn get_file(&self) -> &String {
+        &self.file
+    }
+
     /// Updates the position in the track, and updates states as needed
     fn update_audio(&mut self) {
         let b = BACKEND.lock();
 
         if b.stopped {
             self.state = PlayerState::Idle;
+            self.file = String::from("No file");
         }
 
         if b.paused {
             self.state = PlayerState::Paused;
+            self.file = String::from("No file");
         }
 
         if self.state != PlayerState::Playing {
@@ -187,6 +208,11 @@ impl RapdPlayer {
         self.state = PlayerState::Idle;
         BACKEND.lock().stop_audio();
         info!("Stopped player");
+    }
+
+    /// Get the metadata for the current player
+    fn get_metadata(&self) -> &RapdMetadata {
+        return &self.metadata.as_ref().unwrap();
     }
 
     /// Start the RapdPlayer, should be called on another thread seperate from the main thread in

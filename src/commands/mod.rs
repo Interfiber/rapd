@@ -24,6 +24,7 @@ pub struct GetTimeCommand {}
 pub struct StopCommand {}
 pub struct TogglePauseCommand {}
 pub struct GetLengthCommand {}
+pub struct GetFileCommand {}
 
 // end section: Commands
 
@@ -116,6 +117,15 @@ impl RapdCommand for GetLengthCommand {
         let len = player.get_length();
 
         RapdCommandResponse::new(json!(len), false)
+    }
+}
+
+impl RapdCommand for GetFileCommand {
+    fn execute(&self, _msg: RapdMessage) -> RapdCommandResponse {
+        let player = PLAYER.lock(); 
+        let file = player.get_file();
+
+        RapdCommandResponse::new(json!(file), false)
     }
 }
 

@@ -7,6 +7,7 @@ use crate::player::RapdPlayerTime;
 pub struct RapdMetadata {
     file: String,
     length: RapdPlayerTime,
+    title: String
 }
 
 impl RapdMetadata {
@@ -18,6 +19,7 @@ impl RapdMetadata {
                 min: 0,
                 second: 0,
             },
+            title: String::from("Unknown title")
         }
     }
 
@@ -36,7 +38,8 @@ impl RapdMetadata {
         trace!("Getting duration from properties");
         let duration = properties.duration();
 
-        trace!("Updating length");
+        trace!("Updating metadata");
+
         self.length = RapdPlayerTime {
             hour: (duration.as_secs() / 60) / 60,
             min: duration.as_secs() / 60,
