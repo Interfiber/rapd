@@ -69,7 +69,7 @@ mod pulseaudio {
             // Create a PulseAudio connection.
             let pa_result = psimple::Simple::new(
                 None,                               // Use default server
-                "Rust Audio Player Daemon",         // Application name
+                "Rust Audio Player Daemon [RAPD]",  // Application name
                 pulse::stream::Direction::Playback, // Playback stream
                 None,                               // Default playback device
                 "Music",                            // Description of the stream

@@ -7,7 +7,7 @@ use crate::player::RapdPlayerTime;
 pub struct RapdMetadata {
     file: String,
     length: RapdPlayerTime,
-    title: String
+    title: String,
 }
 
 impl RapdMetadata {
@@ -19,7 +19,7 @@ impl RapdMetadata {
                 min: 0,
                 second: 0,
             },
-            title: String::from("Unknown title")
+            title: String::from("Unknown title"),
         }
     }
 

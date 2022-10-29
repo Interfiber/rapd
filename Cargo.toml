@@ -13,6 +13,8 @@ lazy_static = "1.4.0"
 parking_lot = "0.12.1"
 symphonia = { version = "0.5.1", features = [ "aac", "alac", "mp3", "isomp4" ] }
 lofty = "0.8.1"
+xdg = "2.4.1"
+uuid = { version = "1.2.1", features = ["v4", "fast-rng"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 libpulse-binding = "2.5.0"

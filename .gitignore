@@ -8,3 +8,5 @@ plugins/rapd-mpris/node_modules
 # already existing elements were commented out
 
 #/target
+
+docs/book

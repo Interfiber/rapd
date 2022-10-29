@@ -122,7 +122,7 @@ impl RapdCommand for GetLengthCommand {
 
 impl RapdCommand for GetFileCommand {
     fn execute(&self, _msg: RapdMessage) -> RapdCommandResponse {
-        let player = PLAYER.lock(); 
+        let player = PLAYER.lock();
         let file = player.get_file();
 
         RapdCommandResponse::new(json!(file), false)

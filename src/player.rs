@@ -55,7 +55,7 @@ impl RapdPlayer {
                 second: 0,
             },
             metadata: Default::default(),
-            file: String::from("No file")
+            file: String::from("No file"),
         }
     }
 
@@ -170,10 +170,15 @@ impl RapdPlayer {
             return;
         }
 
-         let len = self.get_length();
+        let len = self.get_length();
 
-        if self.time.hour >= len.hour && self.time.min >= len.min && self.time.second >= len.second {
-            self.time = RapdPlayerTime { hour: 0, min: 0, second: 0 };
+        if self.time.hour >= len.hour && self.time.min >= len.min && self.time.second >= len.second
+        {
+            self.time = RapdPlayerTime {
+                hour: 0,
+                min: 0,
+                second: 0,
+            };
         }
 
         self.time.second += 1;
@@ -212,7 +217,7 @@ impl RapdPlayer {
 
     /// Get the metadata for the current player
     fn get_metadata(&self) -> &RapdMetadata {
-        return &self.metadata.as_ref().unwrap();
+        self.metadata.as_ref().unwrap()
     }
 
     /// Start the RapdPlayer, should be called on another thread seperate from the main thread in

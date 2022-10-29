@@ -132,10 +132,13 @@ impl AudioBackend for SymphoniaAudioBackend {
         trace!("Starting audio decoding");
 
         loop {
+
+
+            trace!("Pause state: {}", self.paused);
             #[allow(clippy::while_immutable_condition)]
             while self.paused {
+                info!("Playback paused");
                 self.stopped = false;
-                self.paused = true;
                 std::thread::sleep(Duration::from_millis(500));
             }
 
@@ -195,6 +198,7 @@ impl AudioBackend for SymphoniaAudioBackend {
     }
 
     fn pause_audio(&mut self) {
+        info!("Backend is pausing audio");
         self.paused = true;
     }
 

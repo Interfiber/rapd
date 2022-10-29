@@ -5,8 +5,8 @@ use serde_json::json;
 use crate::json::{RapdCommandResponse, RapdMessage};
 
 use super::{
-    GetLengthCommand, GetStateCommand, GetTimeCommand, PingCommand, PlayFileCommand, RapdCommand,
-    StopCommand, TogglePauseCommand, GetFileCommand,
+    GetFileCommand, GetLengthCommand, GetStateCommand, GetTimeCommand, PingCommand,
+    PlayFileCommand, RapdCommand, StopCommand, TogglePauseCommand,
 };
 
 pub struct RapdCommandManager {

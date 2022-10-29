@@ -6,6 +6,7 @@ extern crate log;
 mod audio;
 mod client;
 mod commands;
+mod database;
 mod json;
 mod metadata;
 mod player;
@@ -30,6 +31,9 @@ fn main() {
             PLAYER.lock().start(r1);
         })
         .expect("Failed to spawn player thread");
+
+    info!("Loading database for first time...");
+    database::load_db();
 
     info!("Starting TCP server...");
     let server = server::RapdServer::new(6702);

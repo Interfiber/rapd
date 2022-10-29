@@ -1,0 +1,46 @@
+site_name: Rust Audio Player Daemon
+repo_url: https://github.com/Interfiber/rapd
+repo_name: Interfiber/rapd
+# NOTE: the theme css is from: https://github.com/Elttob/Fusion
+# under the MIT license
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.tabs
+  palette: 
+    scheme: fusion-dark
+    primary: black
+  font:
+    text: Inter
+    code: JetBrains Mono
+extra_css:
+    - assets/fusion.css
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - tables
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Guides:
+    - Installation: install.md
+    - Build from source:
+      - Non-NixOS systems: build_from_src.md
+      - NixOS systems: build_nix.md
+
+  - Protocol:
+    - Protocol reference: protocol.md
+    - Connection guide: connect.md
+    - Player states: states.md
