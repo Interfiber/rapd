@@ -8,19 +8,19 @@
       
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
       
-        <title>Rust Audio Player Daemon</title>
+        <title>NixOS systems - Rust Audio Player Daemon</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.20d9efc8.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.cbb835fc.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
         
           
           
@@ -41,9 +41,9 @@
       
     
     
-      <link rel="stylesheet" href="assets/fusion.css">
+      <link rel="stylesheet" href="../assets/fusion.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -67,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#build-from-source-on-nixos" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -77,7 +82,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Rust Audio Player Daemon" class="md-header__button md-logo" aria-label="Rust Audio Player Daemon" data-md-component="logo">
+    <a href=".." title="Rust Audio Player Daemon" class="md-header__button md-logo" aria-label="Rust Audio Player Daemon" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -96,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              NixOS systems
             
           </span>
         </div>
@@ -168,12 +173,10 @@
         
   
   
-    
-  
 
 
   <li class="md-tabs__item">
-    <a href="." class="md-tabs__link md-tabs__link--active">
+    <a href=".." class="md-tabs__link">
       Home
     </a>
   </li>
@@ -182,13 +185,15 @@
         
   
   
+    
+  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="install/" class="md-tabs__link">
+      <a href="../install/" class="md-tabs__link md-tabs__link--active">
         Guides
       </a>
     </li>
@@ -204,7 +209,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="protocol/" class="md-tabs__link">
+      <a href="../protocol/" class="md-tabs__link">
         Protocol
       </a>
     </li>
@@ -222,9 +227,7 @@
           
             
               
-                
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -234,7 +237,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Rust Audio Player Daemon" class="md-nav__button md-logo" aria-label="Rust Audio Player Daemon" data-md-component="logo">
+    <a href=".." title="Rust Audio Player Daemon" class="md-nav__button md-logo" aria-label="Rust Audio Player Daemon" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -263,19 +266,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         Home
       </a>
-      
     </li>
   
 
@@ -286,12 +281,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
       
       
@@ -314,7 +311,7 @@
   
   
     <li class="md-nav__item">
-      <a href="install/" class="md-nav__link">
+      <a href="../install/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -326,12 +323,14 @@
               
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" checked>
       
       
       
@@ -354,7 +353,7 @@
   
   
     <li class="md-nav__item">
-      <a href="build_from_src/" class="md-nav__link">
+      <a href="../build_from_src/" class="md-nav__link">
         Non-NixOS systems
       </a>
     </li>
@@ -366,11 +365,73 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="build_nix/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          NixOS systems
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         NixOS systems
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-clone-from-github" class="md-nav__link">
+    Step 1. Clone from GitHub
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-enter-a-nix-shell" class="md-nav__link">
+    Step 2. Enter a Nix shell
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-build-binarys" class="md-nav__link">
+    Step 3. Build binarys
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-move-binarys-into-path" class="md-nav__link">
+    Step 4. Move binarys into PATH
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -423,7 +484,7 @@
   
   
     <li class="md-nav__item">
-      <a href="protocol/" class="md-nav__link">
+      <a href="../protocol/" class="md-nav__link">
         Protocol reference
       </a>
     </li>
@@ -437,7 +498,7 @@
   
   
     <li class="md-nav__item">
-      <a href="connect/" class="md-nav__link">
+      <a href="../connect/" class="md-nav__link">
         Connection guide
       </a>
     </li>
@@ -451,7 +512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="states/" class="md-nav__link">
+      <a href="../states/" class="md-nav__link">
         Player states
       </a>
     </li>
@@ -473,9 +534,7 @@
             
             
               
-                
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -484,6 +543,44 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-clone-from-github" class="md-nav__link">
+    Step 1. Clone from GitHub
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-enter-a-nix-shell" class="md-nav__link">
+    Step 2. Enter a Nix shell
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-build-binarys" class="md-nav__link">
+    Step 3. Build binarys
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-move-binarys-into-path" class="md-nav__link">
+    Step 4. Move binarys into PATH
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -497,78 +594,34 @@
                 
                   
 
-  <a href="https://github.com/Interfiber/rapd/edit/master/docs/index.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/Interfiber/rapd/edit/master/docs/build_nix.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<p><link rel="stylesheet" href="assets/index.css"></p>
-<section class="fusion-home-landing">
-    <h1>Rust audio player daemon</h1>
-    <p>
-      RAPD is a media player daemon that runs in the background, and accepts TCP connections
-      to control its built in media player. The benefit of this is low resource usage, and 
-      independent music storage.
-    </p>
-    <nav>
-        <a href="install" class="arrow-link">Manual</a>
-        <a href="https://github.com/Interfiber/rapd/releases" class="arrow-link external-link">Download latest</a>
-    </nav>
-</section>
-
-<section class="fusion-home-float">
-    <h2>Low resource usage</h2>
-    <p>
-      RAPD is built in rust for speed, and saftey. Also since RAPD does not run a fancy
-      user interface it can run with low CPU, and memory use in the background.
-    </p>
-</section>
-
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">RAPD at idle</label><label for="__tabbed_1_2">MPD at idle</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p><img alt="" height="600" src="assets/rapd_resources.png" width="600" /></p>
+<h1 id="build-from-source-on-nixos">Build from source on NixOS</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently rapd does not use flakes, support for flakes will be added soon!</p>
 </div>
-<div class="tabbed-block">
-<p><img alt="" height="600" src="assets/mpd_resources.png" width="600" /></p>
-</div>
-</div>
-</div>
-<hr />
-<section class="fusion-home-float">
-    <h2>Easily configurable</h2>
-    <p>
-        RAPD does not have a config file. Instead it has an auto launch script,
-        here you can use rapc to set your configuration. You can also do this during runtime
-    </p>
-</section>
-
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># set your music directory</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>rapc config <span class="nb">set</span> music_dir <span class="nv">$HOME</span>/Music
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># set the packet format to be binary</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>rapc config <span class="nb">set</span> packet_format bin
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># set the packet format to be json</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>rapc config <span class="nb">set</span> packet_format json
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># enable notifications</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>rapc config <span class="nb">set</span> notifications_enabled <span class="nb">true</span>
-</code></pre></div>
-<hr />
-<section class="fusion-home-float">
-    <h2>Minimal</h2>
-    <p>
-      RAPD is minimal, is has no gui by default, and has no ultra-complex features. Its just a music player
-    </p>
-</section>
-
-<p><img alt="" height="600" src="assets/rapd_log.png" width="600" /></p>
+<h2 id="step-1-clone-from-github">Step 1. Clone from GitHub</h2>
+<p>You can clone the repo from github using the following command
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone https://github.com/Interfiber/rapd
+</code></pre></div></p>
+<h2 id="step-2-enter-a-nix-shell">Step 2. Enter a Nix shell</h2>
+<p>Now enter a nix-shell using the provided <code>shell.nix</code>, you can do this using the command below
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>nix-shell
+</code></pre></div></p>
+<h2 id="step-3-build-binarys">Step 3. Build binarys</h2>
+<p>Now build the binarys using cargo
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cargo build <span class="c1"># build a debug build</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>cargo build --release <span class="c1"># build a release build</span>
+</code></pre></div></p>
+<h2 id="step-4-move-binarys-into-path">Step 4. Move binarys into <code>PATH</code></h2>
+<p>Now <code>mv</code> the resulting binary into a directory thats in your <code>PATH</code>, such as <code>~/.local/share/bin</code></p>
 
 
-
-  
 
 
 
@@ -584,19 +637,32 @@
         <footer class="md-footer">
   
     
-      
-    
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../build_from_src/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Non-NixOS systems" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Non-NixOS systems
+            </div>
+          </div>
+        </a>
       
       
         
-        <a href="install/" class="md-footer__link md-footer__link--next" aria-label="Next: Installation" rel="next">
+        <a href="../protocol/" class="md-footer__link md-footer__link--next" aria-label="Next: Protocol reference" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Installation
+              Protocol reference
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -627,10 +693,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs"], "search": "assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.8492ddcf.min.js"></script>
+      <script src="../assets/javascripts/bundle.8492ddcf.min.js"></script>
       
     
   </body>
