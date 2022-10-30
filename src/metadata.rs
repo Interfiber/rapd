@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use lofty::{AudioFile, Probe, Accessor, PictureType, MimeType};
+use lofty::{AudioFile, Probe, Accessor, MimeType};
 use serde::{Serialize, Deserialize};
 
 use crate::player::RapdPlayerTime;
@@ -77,7 +77,7 @@ impl RapdMetadata {
         self.artist = String::from(tag.artist().unwrap_or("Unknown artist"));
         self.album = String::from(tag.album().unwrap_or("Unknown album"));
 
-        if tag.pictures().len() > 0 {
+        if !tag.pictures().is_empty() {
 
             debug!("Extracting album art");
             let pic_data = tag.pictures()[0].data();
@@ -99,7 +99,7 @@ impl RapdMetadata {
             if !Path::new(&album_art_file).exists() {
                 trace!("Writing extracted data to disk");
 
-                std::fs::write(album_art_file.to_string(), pic_data).expect("Failed to write image");
+                std::fs::write(&album_art_file, pic_data).expect("Failed to write image");
             }
 
             self.album_art = album_art_file;

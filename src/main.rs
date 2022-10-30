@@ -12,6 +12,7 @@ mod metadata;
 mod player;
 mod server;
 mod state;
+mod config;
 
 fn main() {
     // init logger

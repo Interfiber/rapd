@@ -2,7 +2,7 @@ use flume::Sender;
 use lazy_static::lazy_static;
 use parking_lot::Mutex;
 
-use crate::{database::RapdDatabase, player::RapdPlayer};
+use crate::{database::RapdDatabase, player::RapdPlayer, config::RapdConfig};
 
 pub struct RapdPlayerChannel {
     pub sender: Option<Sender<String>>,
@@ -20,4 +20,5 @@ lazy_static! {
         sender: Default::default()
     });
     pub static ref DATABASE: Mutex<RapdDatabase> = Mutex::new(RapdDatabase::empty());
+    pub static ref CONFIG: Mutex<RapdConfig> = Mutex::new(RapdConfig::new());
 }

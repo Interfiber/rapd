@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use crate::state::PLAYER;
+use crate::state::{PLAYER, CONFIG};
 use serde_json::json;
 
 use crate::{
@@ -26,6 +26,8 @@ pub struct TogglePauseCommand {}
 pub struct GetLengthCommand {}
 pub struct GetFileCommand {}
 pub struct GetMetadataCommand {}
+pub struct RebuildDatabaseCommand {}
+pub struct SetConfigValueCommand {}
 
 // end section: Commands
 
@@ -136,6 +138,31 @@ impl RapdCommand for GetMetadataCommand {
        let metadata = player.get_metadata();
 
        RapdCommandResponse::new(json!(metadata), false)
+    }
+}
+
+impl RapdCommand for RebuildDatabaseCommand {
+    fn execute(&self, _msg: RapdMessage) -> RapdCommandResponse {
+        info!("Rebuilding database...");
+        crate::database::rebuild_db();
+
+        RapdCommandResponse::new(json!("JSON music database rebuilt"), false)
+    }
+}
+
+impl RapdCommand for SetConfigValueCommand {
+    fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
+        if msg.params.len() == 2 {
+           
+            let key = &msg.params[0];
+            let val = &msg.params[1];
+
+            crate::config::set_value(&key, String::from(val));
+
+            RapdCommandResponse::new(json!("Set config value"), false)
+        } else {
+            RapdCommandResponse::new(json!("This command takes two params: KEY, VALUE"), true)
+        }
     }
 }
 

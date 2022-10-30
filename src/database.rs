@@ -1,15 +1,18 @@
 use std::io::Read;
 use std::io::Write;
+use std::time::SystemTime;
+use std::time::UNIX_EPOCH;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::state::CONFIG;
 use crate::state::DATABASE;
 
 #[derive(Serialize, Deserialize)]
 pub struct RapdDatabase {
     files: Vec<RapdAudioFile>,
     playlists: Vec<RapdPlaylist>,
-    last_rebuild: i32,
+    last_rebuild: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -53,15 +56,19 @@ impl RapdDatabase {
         RapdDatabase {
             files: Vec::new(),
             playlists: Vec::new(),
-            last_rebuild: 0,
+            last_rebuild: String::from("0"),
         }
     }
 
     /// Creates a json readable format of the database
-    pub fn dump(&self) -> String {
-        let dump_str = serde_json::to_string_pretty(self).expect("Failed to dump self into json");
+    pub fn dump(&mut self) -> String {
 
-        dump_str
+        let time = SystemTime::now();
+        let dist = time.duration_since(UNIX_EPOCH).expect("Failed to calculate time since UNIX epoch").as_millis();
+
+        self.last_rebuild = dist.to_string();
+
+        serde_json::to_string_pretty(self).expect("Failed to dump self into json")
     }
 
     /// Adds an audio file to the database
@@ -99,8 +106,6 @@ pub fn load_db(){
     let db_file = get_db_file();
 
     DATABASE.lock().read(db_file);
-
-    debug!("Database json dump: {}", DATABASE.lock().dump());
 }
 
 pub fn save_db(){
@@ -108,8 +113,29 @@ pub fn save_db(){
     let db_file = get_db_file();
     let dump = DATABASE.lock().dump();
 
-    let mut file = std::fs::File::open(db_file).expect("Failed to open database file");
+    let mut file = std::fs::File::create(db_file).expect("Failed to open database file");
     write!(&mut file, "{}", dump).expect("Failed to write to database");
 
     info!("Wrote database to disk");
+}
+
+pub fn rebuild_db(){
+   info!("Scanning files in music directory");
+   let music_dir = CONFIG.lock().music_directory();
+                                                 
+   let paths = std::fs::read_dir(music_dir).unwrap();
+
+   for path in paths {
+
+       let file = path.unwrap().path();
+
+       if !file.is_dir() {
+        let path_name = file.as_os_str().to_str().unwrap().to_string();
+
+        DATABASE.lock().add_file(path_name);
+       }
+   }
+
+   info!("Rebuilt database, dumping to disk");
+   save_db();
 }
