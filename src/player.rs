@@ -2,7 +2,7 @@ use crate::{audio::AudioBackend, metadata::RapdMetadata};
 use flume::Receiver;
 use lazy_static::lazy_static;
 use parking_lot::Mutex;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use std::time::Duration;
 
 use crate::state::PLAYER;
@@ -29,7 +29,7 @@ impl PlayerState {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Deserialize, Serialize)]
 pub struct RapdPlayerTime {
     pub hour: u64,
     pub min: u64,
@@ -216,7 +216,7 @@ impl RapdPlayer {
     }
 
     /// Get the metadata for the current player
-    fn get_metadata(&self) -> &RapdMetadata {
+    pub fn get_metadata(&self) -> &RapdMetadata {
         self.metadata.as_ref().unwrap()
     }
 

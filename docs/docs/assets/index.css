@@ -11,21 +11,13 @@ body {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-color: var(--md-primary-fg-color);
+	background-color: var(--md-primary-bg-color);
 	perspective: 1px;
 	perspective-origin: top center;
 	overscroll-behaviour: contain;
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
-}
-
-[data-md-color-primary=black] .md-header {
-	background: none;
-}
-
-[data-md-color-primary=black] .md-tabs {
-	background: none;
 }
 
 .md-content__inner > .md-content__button:first-child {
@@ -136,11 +128,11 @@ div.highlight * * {
 }
 
 .md-typeset code {
-	background: var(--md-primary-fg-color);
+	background: var(--md-primary-bg-color);
 }
 
 .md-typeset hr {
-	border-bottom-color: var(--md-default-fg-color);
+	border-bottom-color: var(--md-default-bg-color);
 	opacity: calc(35 / 255);
 }
 

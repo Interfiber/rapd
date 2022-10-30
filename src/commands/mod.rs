@@ -25,6 +25,7 @@ pub struct StopCommand {}
 pub struct TogglePauseCommand {}
 pub struct GetLengthCommand {}
 pub struct GetFileCommand {}
+pub struct GetMetadataCommand {}
 
 // end section: Commands
 
@@ -126,6 +127,15 @@ impl RapdCommand for GetFileCommand {
         let file = player.get_file();
 
         RapdCommandResponse::new(json!(file), false)
+    }
+}
+
+impl RapdCommand for GetMetadataCommand {
+    fn execute(&self, _msg: RapdMessage) -> RapdCommandResponse {
+       let player = PLAYER.lock();
+       let metadata = player.get_metadata();
+
+       RapdCommandResponse::new(json!(metadata), false)
     }
 }
 
