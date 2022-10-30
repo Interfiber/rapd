@@ -6,14 +6,14 @@ extern crate log;
 mod audio;
 mod client;
 mod commands;
+mod config;
 mod database;
 mod json;
 mod metadata;
+mod notifications;
 mod player;
 mod server;
 mod state;
-mod config;
-mod notifications;
 
 fn main() {
     // init logger

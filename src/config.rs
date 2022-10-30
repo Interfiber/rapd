@@ -2,17 +2,16 @@ use crate::state::CONFIG;
 
 pub struct RapdConfig {
     notifications_enabled: bool,
-    music_dir: String
+    music_dir: String,
 }
 
 impl RapdConfig {
-
     /// Creates a new RapdConfig, with default values
     pub fn new() -> RapdConfig {
-       RapdConfig { 
-           notifications_enabled: false,
-           music_dir: String::new()
-       } 
+        RapdConfig {
+            notifications_enabled: false,
+            music_dir: String::new(),
+        }
     }
 
     /// Returns if notifications are enabled
@@ -31,21 +30,22 @@ impl RapdConfig {
     }
 
     /// Set if notifications are enabled
-    pub fn set_notifications(&mut self, v: bool){
+    pub fn set_notifications(&mut self, v: bool) {
         self.notifications_enabled = v;
     }
 }
 
 pub fn set_value(key: &str, value: String) {
-
     match key {
         "notifications_enabled" => {
-            CONFIG.lock().set_notifications(value.parse::<bool>().expect("Invalid boolean value"));
-        },
+            CONFIG
+                .lock()
+                .set_notifications(value.parse::<bool>().expect("Invalid boolean value"));
+        }
         "music_dir" => {
             CONFIG.lock().set_music_dir(value.to_string());
         }
-        _ => error!("Invalid config value key")
+        _ => error!("Invalid config value key"),
     }
 
     info!("Config key {} is now set to {}", key, value);

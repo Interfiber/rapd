@@ -132,8 +132,6 @@ impl AudioBackend for SymphoniaAudioBackend {
         trace!("Starting audio decoding");
 
         loop {
-
-
             trace!("Pause state: {}", self.paused);
             #[allow(clippy::while_immutable_condition)]
             while self.paused {

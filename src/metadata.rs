@@ -1,7 +1,7 @@
 use std::path::Path;
 
-use lofty::{AudioFile, Probe, Accessor, MimeType};
-use serde::{Serialize, Deserialize};
+use lofty::{Accessor, AudioFile, MimeType, Probe};
+use serde::{Deserialize, Serialize};
 
 use crate::player::RapdPlayerTime;
 
@@ -12,7 +12,7 @@ pub struct RapdMetadata {
     title: String,
     artist: String,
     album: String,
-    album_art: String
+    album_art: String,
 }
 
 impl RapdMetadata {
@@ -27,7 +27,7 @@ impl RapdMetadata {
             title: String::from("Unknown title"),
             artist: String::from("Unknown artist"),
             album: String::from("Unknown album"),
-            album_art: String::from("no_art")
+            album_art: String::from("no_art"),
         }
     }
 
@@ -38,7 +38,8 @@ impl RapdMetadata {
         if xdg_dir.find_cache_file("album_art").is_none() {
             error!("No album art cache folder found, creating one");
 
-            std::fs::create_dir_all(format!("{}/album_art", cache_home)).expect("Failed to create album art cache");
+            std::fs::create_dir_all(format!("{}/album_art", cache_home))
+                .expect("Failed to create album art cache");
         }
 
         format!("{}/album_art", cache_home)
@@ -62,7 +63,9 @@ impl RapdMetadata {
         trace!("Getting primary tag");
         let tag = match tagged_file.primary_tag() {
             Some(primary_tag) => primary_tag,
-            None => tagged_file.first_tag().expect("Failed to get first metadata tag for file")
+            None => tagged_file
+                .first_tag()
+                .expect("Failed to get first metadata tag for file"),
         };
 
         trace!("Updating metadata");
@@ -78,7 +81,6 @@ impl RapdMetadata {
         self.album = String::from(tag.album().unwrap_or("Unknown album"));
 
         if !tag.pictures().is_empty() {
-
             debug!("Extracting album art");
             let pic_data = tag.pictures()[0].data();
             let album_art_dir = Self::get_album_art_cache();
@@ -92,7 +94,10 @@ impl RapdMetadata {
                 return;
             }
 
-            let album_art_file = format!("{}/{}_{}_{}.{}", album_art_dir, self.title, self.artist, self.album, ext);
+            let album_art_file = format!(
+                "{}/{}_{}_{}.{}",
+                album_art_dir, self.title, self.artist, self.album, ext
+            );
 
             trace!("Checking for file: {}", album_art_file);
 

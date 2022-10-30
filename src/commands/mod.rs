@@ -134,10 +134,10 @@ impl RapdCommand for GetFileCommand {
 
 impl RapdCommand for GetMetadataCommand {
     fn execute(&self, _msg: RapdMessage) -> RapdCommandResponse {
-       let player = PLAYER.lock();
-       let metadata = player.get_metadata();
+        let player = PLAYER.lock();
+        let metadata = player.get_metadata();
 
-       RapdCommandResponse::new(json!(metadata), false)
+        RapdCommandResponse::new(json!(metadata), false)
     }
 }
 
@@ -153,7 +153,6 @@ impl RapdCommand for RebuildDatabaseCommand {
 impl RapdCommand for SetConfigValueCommand {
     fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
         if msg.params.len() == 2 {
-           
             let key = &msg.params[0];
             let val = &msg.params[1];
 

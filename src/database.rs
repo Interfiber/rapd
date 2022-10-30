@@ -1,8 +1,8 @@
+use serde::{Deserialize, Serialize};
 use std::io::Read;
 use std::io::Write;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
-use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::state::CONFIG;
@@ -30,9 +30,8 @@ pub struct RapdPlaylist {
 }
 
 impl RapdDatabase {
-
     /// Read the rapd database from a path
-    pub fn read(&mut self, path: String)  {
+    pub fn read(&mut self, path: String) {
         info!("Reading rapd database from path: {}", path);
 
         // read file
@@ -62,9 +61,11 @@ impl RapdDatabase {
 
     /// Creates a json readable format of the database
     pub fn dump(&mut self) -> String {
-
         let time = SystemTime::now();
-        let dist = time.duration_since(UNIX_EPOCH).expect("Failed to calculate time since UNIX epoch").as_millis();
+        let dist = time
+            .duration_since(UNIX_EPOCH)
+            .expect("Failed to calculate time since UNIX epoch")
+            .as_millis();
 
         self.last_rebuild = dist.to_string();
 
@@ -77,15 +78,11 @@ impl RapdDatabase {
 
         let id = Uuid::new_v4().to_string();
 
-        let f = RapdAudioFile {
-            file,
-            id
-        };
+        let f = RapdAudioFile { file, id };
 
         self.files.push(f);
     }
 }
-
 
 /// Gets the location of the rapd database file
 pub fn get_db_file() -> String {
@@ -93,22 +90,30 @@ pub fn get_db_file() -> String {
 
     if xdg_dirs.find_data_file("database").is_none() {
         info!("No database file found, creating new one");
-        let config_path = xdg_dirs.place_data_file("database")
-                          .expect("cannot create configuration directory");
+        let config_path = xdg_dirs
+            .place_data_file("database")
+            .expect("cannot create configuration directory");
         let mut config_file = std::fs::File::create(config_path).expect("Failed to create db file");
-        write!(&mut config_file, "{}", RapdDatabase::empty().dump()).expect("Failed to write to config file");
+        write!(&mut config_file, "{}", RapdDatabase::empty().dump())
+            .expect("Failed to write to config file");
     }
 
-    return xdg_dirs.get_data_file("database").as_os_str().to_os_string().to_str().unwrap().to_string();
+    return xdg_dirs
+        .get_data_file("database")
+        .as_os_str()
+        .to_os_string()
+        .to_str()
+        .unwrap()
+        .to_string();
 }
 
-pub fn load_db(){
+pub fn load_db() {
     let db_file = get_db_file();
 
     DATABASE.lock().read(db_file);
 }
 
-pub fn save_db(){
+pub fn save_db() {
     info!("Writing database to disk");
     let db_file = get_db_file();
     let dump = DATABASE.lock().dump();
@@ -119,23 +124,22 @@ pub fn save_db(){
     info!("Wrote database to disk");
 }
 
-pub fn rebuild_db(){
-   info!("Scanning files in music directory");
-   let music_dir = CONFIG.lock().music_directory();
-                                                 
-   let paths = std::fs::read_dir(music_dir).unwrap();
+pub fn rebuild_db() {
+    info!("Scanning files in music directory");
+    let music_dir = CONFIG.lock().music_directory();
 
-   for path in paths {
+    let paths = std::fs::read_dir(music_dir).unwrap();
 
-       let file = path.unwrap().path();
+    for path in paths {
+        let file = path.unwrap().path();
 
-       if !file.is_dir() {
-        let path_name = file.as_os_str().to_str().unwrap().to_string();
+        if !file.is_dir() {
+            let path_name = file.as_os_str().to_str().unwrap().to_string();
 
-        DATABASE.lock().add_file(path_name);
-       }
-   }
+            DATABASE.lock().add_file(path_name);
+        }
+    }
 
-   info!("Rebuilt database, dumping to disk");
-   save_db();
+    info!("Rebuilt database, dumping to disk");
+    save_db();
 }

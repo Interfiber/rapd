@@ -2,7 +2,7 @@ use crate::{audio::AudioBackend, metadata::RapdMetadata};
 use flume::Receiver;
 use lazy_static::lazy_static;
 use parking_lot::Mutex;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
 use crate::state::PLAYER;
