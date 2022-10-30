@@ -82,6 +82,12 @@ impl RapdDatabase {
 
         self.files.push(f);
     }
+
+
+    /// Removes all files from the database
+    pub fn clear_files(&mut self){
+        self.files.clear();
+    }
 }
 
 /// Gets the location of the rapd database file
@@ -125,6 +131,9 @@ pub fn save_db() {
 }
 
 pub fn rebuild_db() {
+    info!("Clearing database of files");
+    DATABASE.lock().clear_files();
+
     info!("Scanning files in music directory");
     let music_dir = CONFIG.lock().music_directory();
 

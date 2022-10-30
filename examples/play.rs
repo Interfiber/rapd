@@ -6,7 +6,7 @@ use std::net::TcpStream;
 fn main() {
     let mut stream = TcpStream::connect("127.0.0.1:6702").expect("Failed to connect");
     stream
-        .write(b"{ \"command\": \"play_file\", \"params\": [\"/home/persephone/Music/Lena Raine - Golden [3817008233].mp3\", \"false\"], \"client_name\": \"e\" }\n")
+        .write(b"{ \"command\": \"play_file\", \"params\": [\"/home/persephone/Music/morch kovalski - we've got hostiles [2730552792].mp3\", \"true\"], \"client_name\": \"e\" }\n")
         .expect("Write failed");
 
     let mut reader = BufReader::new(stream);
