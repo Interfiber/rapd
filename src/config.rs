@@ -48,5 +48,5 @@ pub fn set_value(key: &str, value: String) {
         _ => error!("Invalid config value key")
     }
 
-    info!("Config key {} is now set to {}", key, value.to_string());
+    info!("Config key {} is now set to {}", key, value);
 }

@@ -13,6 +13,7 @@ mod player;
 mod server;
 mod state;
 mod config;
+mod notifications;
 
 fn main() {
     // init logger

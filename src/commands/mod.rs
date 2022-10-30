@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use crate::state::{PLAYER, CONFIG};
+use crate::state::PLAYER;
 use serde_json::json;
 
 use crate::{
@@ -157,7 +157,7 @@ impl RapdCommand for SetConfigValueCommand {
             let key = &msg.params[0];
             let val = &msg.params[1];
 
-            crate::config::set_value(&key, String::from(val));
+            crate::config::set_value(key, String::from(val));
 
             RapdCommandResponse::new(json!("Set config value"), false)
         } else {

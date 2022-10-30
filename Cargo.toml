@@ -15,6 +15,7 @@ symphonia = { version = "0.5.1", features = [ "aac", "alac", "mp3", "isomp4" ] }
 lofty = "0.8.1"
 xdg = "2.4.1"
 uuid = { version = "1.2.1", features = ["v4", "fast-rng"] }
+notify-rust = { version = "4.5.10", features = ["image"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 libpulse-binding = "2.5.0"

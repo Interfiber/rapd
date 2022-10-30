@@ -10,9 +10,9 @@ Rust audio player daemon 2.0
 - No use of rodio, symphonia is used for audio decoding instead
 - Scrubbing (TODO)
 - Get place in song 
-- Better metadata support (TODO)
-- Built in notifications (TODO)
-- Configure during runtime, or with startup script via rapc (TODO)
+- Better metadata support
+- Built in notifications
+- Configure during runtime, or with startup script that uses rapc
 - Better rapc code readability (TODO)
 - More verbose rapc command line interface (TODO)
 - Built in discord RPC (TODO)

@@ -109,4 +109,20 @@ impl RapdMetadata {
     pub fn get_length(&self) -> &RapdPlayerTime {
         &self.length
     }
+
+    pub fn get_title(&self) -> String {
+        self.title.clone()
+    }
+
+    pub fn get_artist(&self) -> String {
+        self.artist.clone()
+    }
+
+    pub fn get_album(&self) -> String {
+        self.album.clone()
+    }
+
+    pub fn get_album_art_file(&self) -> String {
+        self.album_art.clone()
+    }
 }

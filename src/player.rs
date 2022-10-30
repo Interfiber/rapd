@@ -129,6 +129,7 @@ impl RapdPlayer {
 
         self.state = PlayerState::Playing;
 
+        crate::notifications::alert_play_file();
         info!("Started audio playback");
     }
 
