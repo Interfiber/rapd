@@ -61,8 +61,9 @@ impl RapdCommand for PlayFileCommand {
                 channel.send(String::from("stop_player:_")).unwrap();
             }
 
+            let file_safe = msg.params[0].replace(",", "\\COMMA");
             channel
-                .send(format!("play_file:{},{}", msg.params[0], msg.params[1]))
+                .send(format!("play_file:{},{}", file_safe, msg.params[1]))
                 .unwrap();
 
             RapdCommandResponse::new(json!("Starting audio playback"), false)

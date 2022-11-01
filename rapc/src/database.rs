@@ -16,7 +16,7 @@ pub fn rebuild() {
             crate::utils::client_error(String::from("Line is empty"))
         );
     } else {
-        println!("{}", line);
+        print!("{}", line);
     }
 }
 
@@ -36,6 +36,6 @@ pub fn files() {
             crate::utils::client_error(String::from("Line is empty"))
         );
     } else {
-        println!("{}", line);
+        print!("{}", line);
     }
 }

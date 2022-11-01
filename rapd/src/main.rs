@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use crate::state::{PLAYER, PLAYER_SENDER};
 
 #[macro_use]
@@ -18,6 +20,12 @@ mod state;
 fn main() {
     // init logger
     pretty_env_logger::init();
+
+    info!("Checking for backend lock file");
+    if Path::new("/tmp/.rapd_backend_lock").exists() {
+        info!("Removing backend lock");
+        std::fs::remove_file("/tmp/.rapd_backend_lock").expect("Failed to remove /tmp/.rapd_backend_lock");
+    }
 
     info!("Starting player...");
 

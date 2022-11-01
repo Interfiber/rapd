@@ -1,4 +1,7 @@
-use crate::{server::{RapdServer, RapdCommand}, utils::client_error};
+use crate::{
+    server::{RapdCommand, RapdServer},
+    utils::client_error,
+};
 
 pub fn set_config_value(key: String, value: String) {
     let mut server = RapdServer::new();
@@ -11,8 +14,8 @@ pub fn set_config_value(key: String, value: String) {
     let line = server.read_line();
 
     if line.is_empty() {
-        println!("{}", client_error(String::from("Line is empty")));
+        print!("{}", client_error(String::from("Line is empty")));
     } else {
-        println!("{}", line);
+        print!("{}", line);
     }
 }

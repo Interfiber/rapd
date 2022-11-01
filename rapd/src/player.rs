@@ -246,7 +246,7 @@ impl RapdPlayer {
                         _ => error!("Got unknown param for log command"),
                     }
                 } else if cmd[0] == "play_file" {
-                    self.play_file(params[0], params[1].parse::<bool>().unwrap());
+                    self.play_file(&params[0].replace("\\COMMA", ","), params[1].parse::<bool>().unwrap());
                 } else if cmd[0] == "pause_player" {
                     self.pause_player();
                 } else if cmd[0] == "unpause_player" {
