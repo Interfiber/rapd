@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::io::Read;
 use std::io::Write;
+use std::path::Path;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
 use uuid::Uuid;
@@ -135,11 +136,16 @@ pub fn save_db() {
 }
 
 pub fn rebuild_db() {
-    info!("Clearing database of files");
-    DATABASE.lock().clear_files();
-
     info!("Scanning files in music directory");
     let music_dir = CONFIG.lock().music_directory();
+
+    if !Path::new(&music_dir).exists() {
+        error!("Music directory does not exist: {}", music_dir);
+        return;
+    }
+
+    info!("Clearing database of files");
+    DATABASE.lock().clear_files();
 
     let paths = std::fs::read_dir(music_dir).unwrap();
 
@@ -155,4 +161,7 @@ pub fn rebuild_db() {
 
     info!("Rebuilt database, dumping to disk");
     save_db();
+
+    info!("Reloading database from disk");
+    load_db();
 }
