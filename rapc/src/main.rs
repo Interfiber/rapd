@@ -1,4 +1,4 @@
-use clap::{Arg, Command, arg};
+use clap::{arg, Arg, Command};
 
 mod config;
 mod database;
@@ -32,6 +32,12 @@ fn cli() -> Command {
             Command::new("player")
                 .about("Player operations")
                 .subcommand(Command::new("file").about("Get playing file"))
+                .subcommand(Command::new("state").about("Get the player state"))
+                .subcommand(Command::new("stop").about("Stop the player"))
+                .subcommand(Command::new("pause").about("Toggle the player pause"))
+                .subcommand(Command::new("length").about("Get the length of the audio"))
+                .subcommand(Command::new("time").about("Get the position in the audio"))
+                .subcommand(Command::new("metadata").about("Get the metadata for the audio"))
                 .subcommand(
                     Command::new("play")
                         .arg(Arg::new("file"))
@@ -83,12 +89,30 @@ fn main() {
             match operation {
                 ("file", _) => {
                     player::file();
-                },
+                }
                 ("play", args) => {
                     let should_loop = args.get_one::<bool>("loop").unwrap_or(&false);
-                    let file = args.get_one::<String>("file").map(|s| s.as_str()).expect("No file");
+                    let file = args
+                        .get_one::<String>("file")
+                        .map(|s| s.as_str())
+                        .expect("No file");
 
                     player::play(file, *should_loop);
+                },
+                ("metadata", _) => {
+                    player::metadata();
+                },
+                ("time", _) => {
+                    player::time();
+                },
+                ("length", _) => {
+                    player::length();
+                },
+                ("pause", _) => {
+                    player::pause();
+                },
+                ("stop", _) => {
+                    player::stop();
                 }
                 _ => println!("Invalid command!"),
             }

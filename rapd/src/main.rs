@@ -24,7 +24,8 @@ fn main() {
     info!("Checking for backend lock file");
     if Path::new("/tmp/.rapd_backend_lock").exists() {
         info!("Removing backend lock");
-        std::fs::remove_file("/tmp/.rapd_backend_lock").expect("Failed to remove /tmp/.rapd_backend_lock");
+        std::fs::remove_file("/tmp/.rapd_backend_lock")
+            .expect("Failed to remove /tmp/.rapd_backend_lock");
     }
 
     info!("Starting player...");
