@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use crate::state::{PLAYER, DATABASE};
+use crate::state::{DATABASE, PLAYER};
 use serde_json::json;
 
 use crate::{

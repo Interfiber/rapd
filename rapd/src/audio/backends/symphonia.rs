@@ -89,7 +89,8 @@ impl AudioBackend for SymphoniaAudioBackend {
 
     fn play_audio(&mut self) {
         trace!("Starting audio playback");
-        std::fs::write(Path::new(&format!("/tmp/.rapd_backend_lock")), "").expect("Failed to create lock file");
+        std::fs::write(Path::new("/tmp/.rapd_backend_lock"), "")
+            .expect("Failed to create lock file");
         self.stopped = false;
         self.paused = false;
         let probe = self.probe.as_mut().unwrap();
@@ -132,6 +133,7 @@ impl AudioBackend for SymphoniaAudioBackend {
 
         trace!("Starting audio decoding");
 
+        #[allow(clippy::while_immutable_condition)]
         while !self.stopped {
             trace!("Pause state: {}", self.paused);
 
@@ -175,7 +177,6 @@ impl AudioBackend for SymphoniaAudioBackend {
                     error!("Failed to decode packet: {}", err);
                 }
             }
-
 
             while self.paused {
                 std::thread::sleep(Duration::from_millis(200));

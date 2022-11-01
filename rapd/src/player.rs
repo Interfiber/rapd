@@ -65,8 +65,9 @@ impl RapdPlayer {
         // load file
         info!("Starting audio playback for file: {}", file);
 
-        while std::path::Path::new(&format!("/tmp/.rapd_backend_lock")).exists() {
+        while std::path::Path::new("/tmp/.rapd_backend_lock").exists() {
             warn!("Waiting for lock to be removed from backend");
+            std::thread::sleep(Duration::from_millis(500));
         }
 
         let mut meta = RapdMetadata::new(String::from(file));

@@ -83,9 +83,8 @@ impl RapdDatabase {
         self.files.push(f);
     }
 
-
     /// Removes all files from the database
-    pub fn clear_files(&mut self){
+    pub fn clear_files(&mut self) {
         self.files.clear();
     }
 
