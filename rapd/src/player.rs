@@ -62,22 +62,12 @@ impl RapdPlayer {
     /// Plays an audio file from disk, assumes server already checked if an audio file is already
     /// playing
     fn play_file(&mut self, file: &str, loop_audio: bool) {
-        // stop any playing audio
-        if self.state == PlayerState::Idle {
-            self.stop_player();
-            std::thread::sleep(Duration::from_millis(100)); // hold up, wait a 100 milliseconds.
-                                                            // This isnt the best method for making
-                                                            // sure the player stops before we
-                                                            // start playing audio, but I dont
-                                                            // care. Change it if you want
-        } else if self.state == PlayerState::Paused {
-            self.unpause_player();
-            self.stop_player();
-            std::thread::sleep(Duration::from_millis(500));
-        }
-
         // load file
         info!("Starting audio playback for file: {}", file);
+
+        while std::path::Path::new(&format!("/tmp/.rapd_backend_lock")).exists() {
+            warn!("Waiting for lock to be removed from backend");
+        }
 
         let mut meta = RapdMetadata::new(String::from(file));
         meta.open(); // read metadata

@@ -55,6 +55,12 @@ impl RapdCommand for PlayFileCommand {
                 );
             }
 
+            let player = PLAYER.lock();
+            let player_state = player.get_state();
+            if player_state == &PlayerState::Playing {
+                channel.send(String::from("stop_player:_")).unwrap();
+            }
+
             channel
                 .send(format!("play_file:{},{}", msg.params[0], msg.params[1]))
                 .unwrap();
