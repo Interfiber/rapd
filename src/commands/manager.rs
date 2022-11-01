@@ -7,7 +7,7 @@ use crate::json::{RapdCommandResponse, RapdMessage};
 use super::{
     GetFileCommand, GetLengthCommand, GetMetadataCommand, GetStateCommand, GetTimeCommand,
     PingCommand, PlayFileCommand, RapdCommand, RebuildDatabaseCommand, SetConfigValueCommand,
-    StopCommand, TogglePauseCommand,
+    StopCommand, TogglePauseCommand, GetMusicFilesCommand,
 };
 
 pub struct RapdCommandManager {
@@ -58,4 +58,5 @@ pub fn init_manager(manager: &mut RapdCommandManager) {
     manager.add_cmd("player_get_metadata", GetMetadataCommand {});
     manager.add_cmd("rebuild_database", RebuildDatabaseCommand {});
     manager.add_cmd("config_set", SetConfigValueCommand {});
+    manager.add_cmd("db_get_files", GetMusicFilesCommand {});
 }

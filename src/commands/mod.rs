@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use crate::state::PLAYER;
+use crate::state::{PLAYER, DATABASE};
 use serde_json::json;
 
 use crate::{
@@ -28,6 +28,7 @@ pub struct GetFileCommand {}
 pub struct GetMetadataCommand {}
 pub struct RebuildDatabaseCommand {}
 pub struct SetConfigValueCommand {}
+pub struct GetMusicFilesCommand {}
 
 // end section: Commands
 
@@ -162,6 +163,14 @@ impl RapdCommand for SetConfigValueCommand {
         } else {
             RapdCommandResponse::new(json!("This command takes two params: KEY, VALUE"), true)
         }
+    }
+}
+
+impl RapdCommand for GetMusicFilesCommand {
+    fn execute(&self, _msg: RapdMessage) -> RapdCommandResponse {
+        let db = DATABASE.lock();
+
+        RapdCommandResponse::new(json!(db.get_files()), false)
     }
 }
 

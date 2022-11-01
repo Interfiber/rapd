@@ -1,3 +1,5 @@
+use subprocess::Exec;
+
 use crate::state::CONFIG;
 
 pub struct RapdConfig {
@@ -49,4 +51,15 @@ pub fn set_value(key: &str, value: String) {
     }
 
     info!("Config key {} is now set to {}", key, value);
+}
+
+pub fn autostart() {
+    let config_dir = xdg::BaseDirectories::with_prefix("rapd").unwrap();
+
+    if config_dir.find_config_file("rapdrc").is_some() {
+        let rapdrc = config_dir.find_config_file("rapdrc").unwrap().as_path().to_str().unwrap().to_string();
+        let _ = Exec::shell(rapdrc).join();
+    } else {
+        warn!("No rapdrc file found, not executing");
+    }
 }

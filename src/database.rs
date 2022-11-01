@@ -88,6 +88,11 @@ impl RapdDatabase {
     pub fn clear_files(&mut self){
         self.files.clear();
     }
+
+    /// Get files in database
+    pub fn get_files(&self) -> &Vec<RapdAudioFile> {
+        &self.files
+    }
 }
 
 /// Gets the location of the rapd database file
