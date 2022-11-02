@@ -45,6 +45,7 @@ fn cli() -> Command {
                         .about("Play a file"),
                 ),
         )
+        .subcommand(Command::new("ping").about("Ping the rapd server"))
 }
 
 fn main() {
@@ -82,6 +83,9 @@ fn main() {
                 }
                 _ => println!("Invalid command!"),
             }
+        },
+        Some(("ping", _)) => {
+            utils::ping();
         }
         Some(("player", sub_matches)) => {
             let operation = sub_matches.subcommand().unwrap_or(("help", sub_matches));
