@@ -42,7 +42,7 @@ impl RapdMetadata {
                 .expect("Failed to create album art cache");
         }
 
-        format!("{}/album_art", cache_home)
+        format!("{}album_art", cache_home)
     }
 
     pub fn open(&mut self) {

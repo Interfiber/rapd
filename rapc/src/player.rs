@@ -59,6 +59,24 @@ pub fn metadata() {
     }
 }
 
+pub fn file_metadata(file: String) {
+    let mut server = RapdServer::new();
+    server.connect();
+
+    let cmd = RapdCommand::new(String::from("player_get_metadata"), vec![file]);
+
+    server.write_cmd(cmd);
+
+    let line = server.read_line();
+
+    if line.is_empty() {
+        println!("{}", client_error(String::from("Line is empty")));
+    } else {
+        print!("{}", line);
+    }
+
+}
+
 pub fn time(){
     let mut server = RapdServer::new();
     server.connect();

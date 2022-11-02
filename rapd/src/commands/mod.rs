@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use crate::state::{DATABASE, PLAYER};
+use crate::{state::{DATABASE, PLAYER}, metadata::RapdMetadata};
 use serde_json::json;
 
 use crate::{
@@ -141,11 +141,21 @@ impl RapdCommand for GetFileCommand {
 }
 
 impl RapdCommand for GetMetadataCommand {
-    fn execute(&self, _msg: RapdMessage) -> RapdCommandResponse {
-        let player = PLAYER.lock();
-        let metadata = player.get_metadata();
+    fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
 
-        RapdCommandResponse::new(json!(metadata), false)
+        if msg.params.len() == 0 {
+            let player = PLAYER.lock();
+            let metadata = player.get_metadata();
+
+            RapdCommandResponse::new(json!(metadata), false)
+        } else if msg.params.len() == 1 {
+            let mut metadata = RapdMetadata::new(msg.params[0].clone());
+            metadata.open(); // Read metadata
+
+            RapdCommandResponse::new(json!(metadata), false) 
+        } else {
+            RapdCommandResponse::new(json!("Too many arguments, expected 0, or 1."), true)
+        }
     }
 }
 

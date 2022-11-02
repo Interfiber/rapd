@@ -37,7 +37,7 @@ fn cli() -> Command {
                 .subcommand(Command::new("pause").about("Toggle the player pause"))
                 .subcommand(Command::new("length").about("Get the length of the audio"))
                 .subcommand(Command::new("time").about("Get the position in the audio"))
-                .subcommand(Command::new("metadata").about("Get the metadata for the audio"))
+                .subcommand(Command::new("metadata").about("Get the metadata for the audio").arg(Arg::new("file")))
                 .subcommand(
                     Command::new("play")
                         .arg(Arg::new("file"))
@@ -103,8 +103,14 @@ fn main() {
 
                     player::play(file, *should_loop);
                 },
-                ("metadata", _) => {
-                    player::metadata();
+                ("metadata", args) => {
+                    let file = args.get_one::<String>("file").map(|s| s.as_str()).unwrap_or("player");
+
+                    if file == "player" {
+                        player::metadata();
+                    } else {
+                        player::file_metadata(String::from(file));
+                    }
                 },
                 ("time", _) => {
                     player::time();
