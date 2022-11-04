@@ -54,18 +54,23 @@ pub fn set_value(key: &str, value: String) {
 }
 
 pub fn autostart() {
-    let config_dir = xdg::BaseDirectories::with_prefix("rapd").unwrap();
+    std::thread::Builder::new()
+        .name(String::from("autostart"))
+        .spawn(move || {
+            let config_dir = xdg::BaseDirectories::with_prefix("rapd").unwrap();
 
-    if config_dir.find_config_file("rapdrc").is_some() {
-        let rapdrc = config_dir
-            .find_config_file("rapdrc")
-            .unwrap()
-            .as_path()
-            .to_str()
-            .unwrap()
-            .to_string();
-        let _ = Exec::shell(rapdrc).join();
-    } else {
-        warn!("No rapdrc file found, not executing");
-    }
+            if config_dir.find_config_file("rapdrc").is_some() {
+                let rapdrc = config_dir
+                    .find_config_file("rapdrc")
+                    .unwrap()
+                    .as_path()
+                    .to_str()
+                    .unwrap()
+                    .to_string();
+                let _ = Exec::shell(rapdrc).join();
+            } else {
+                warn!("No rapdrc file found, not executing");
+            }
+        })
+        .expect("Failed to spawn autostart thread");
 }

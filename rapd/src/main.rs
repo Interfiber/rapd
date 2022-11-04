@@ -46,9 +46,6 @@ fn main() {
     info!("Loading database for first time...");
     database::load_db();
 
-    info!("Running autostart...");
-    config::autostart();
-
     info!("Starting TCP server...");
     let server = server::RapdServer::new(6702);
     server.start();

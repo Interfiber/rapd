@@ -198,6 +198,7 @@ impl RapdPlayer {
     fn pause_player(&mut self) {
         self.state = PlayerState::Paused;
         BACKEND.lock().pause_audio();
+        crate::notifications::alert_paused_player();
         info!("Paused player");
     }
 
@@ -205,13 +206,21 @@ impl RapdPlayer {
     fn unpause_player(&mut self) {
         self.state = PlayerState::Playing;
         BACKEND.lock().resume_audio();
+        crate::notifications::alert_paused_player();
         info!("Unpaused player");
     }
 
     /// Stops the player
     fn stop_player(&mut self) {
         self.state = PlayerState::Idle;
+        self.time = RapdPlayerTime {
+            hour: 0,
+            min: 0,
+            second: 0,
+        };
+
         BACKEND.lock().stop_audio();
+        crate::notifications::alert_player_stop();
         info!("Stopped player");
     }
 

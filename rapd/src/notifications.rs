@@ -1,4 +1,7 @@
-use crate::state::{CONFIG, PLAYER};
+use crate::{
+    player::PlayerState,
+    state::{CONFIG, PLAYER},
+};
 use notify_rust::Notification;
 
 pub fn alert_play_file() {
@@ -21,6 +24,44 @@ pub fn alert_play_file() {
             .image_path(&metadata.get_album_art_file())
             .show()
             .expect("Failed to show notification");
+    } else {
+        debug!("Not showing notification, notifications disabled in config");
+    }
+}
+
+pub fn alert_player_stop() {
+    let cfg = CONFIG.lock();
+
+    if cfg.notifications() {
+        Notification::new()
+            .summary("Rust Audio Player Daemon")
+            .body("Stopped playback")
+            .show()
+            .expect("Failed to show notification");
+    } else {
+        debug!("Not showing notification, notifications disabled in config");
+    }
+}
+
+pub fn alert_paused_player() {
+    let cfg = CONFIG.lock();
+
+    if cfg.notifications() {
+        let player = PLAYER.lock();
+
+        if player.get_state() == &PlayerState::Paused {
+            Notification::new()
+                .summary("Rust Audio Player Daemon")
+                .body("Paused playback")
+                .show()
+                .expect("Failed to show notification");
+        } else if player.get_state() == &PlayerState::Playing {
+            Notification::new()
+                .summary("Rust Audio Player Daemon")
+                .body("Unpaused playback")
+                .show()
+                .expect("Failed to show notification");
+        }
     } else {
         debug!("Not showing notification, notifications disabled in config");
     }

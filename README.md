@@ -8,12 +8,10 @@ Rust audio player daemon 2.0
 - No on-disk statefile, which removes the chance of state errors, this also allows the player to pause/stop/begin the audio faster
 - Better request/response format
 - No use of rodio, symphonia is used for audio decoding instead
-- Scrubbing (TODO)
 - Get place in song 
 - Better metadata support
 - Built in notifications
 - Configure during runtime, or with startup script that uses rapc
-- Better rapc code readability (TODO)
-- More verbose rapc command line interface (TODO)
-- Built in discord RPC (TODO)
+- Better rapc code readability
+- More verbose rapc command line interface
 - Better music database

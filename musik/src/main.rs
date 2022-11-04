@@ -40,9 +40,9 @@ impl<'a> App<'a> {
                 second: 1,
             },
             time: RapdPlayerTime {
-                hour: 1,
-                min: 1,
-                second: 1,
+                hour: 0,
+                min: 0,
+                second: 0,
             },
             files: vec![],
             metadata: Default::default(),

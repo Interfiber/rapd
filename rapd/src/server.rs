@@ -20,6 +20,11 @@ impl RapdServer {
             }
         };
         info!("Started server at: {}", addr);
+
+        info!("Running autostart...");
+        crate::config::autostart();
+        info!("Ran autostart");
+
         for stream in listener.incoming() {
             // handle connection
             thread::Builder::new()
