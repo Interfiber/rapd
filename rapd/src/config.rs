@@ -4,7 +4,6 @@ use crate::state::CONFIG;
 
 pub struct RapdConfig {
     notifications_enabled: bool,
-    discord_enabled: bool,
     music_dir: String,
 }
 
@@ -14,7 +13,6 @@ impl RapdConfig {
         RapdConfig {
             notifications_enabled: false,
             music_dir: String::new(),
-            discord_enabled: false
         }
     }
 
@@ -37,16 +35,6 @@ impl RapdConfig {
     pub fn set_notifications(&mut self, v: bool) {
         self.notifications_enabled = v;
     }
-
-    /// Set if discord RPC is enabled
-    pub fn set_discord(&mut self, v: bool){
-        self.discord_enabled = v;
-    }
-
-    /// Returns if discord RPC is enabled
-    pub fn get_discord(&self) -> bool {
-        self.discord_enabled
-    }
 }
 
 pub fn set_value(key: &str, value: String) {
@@ -58,9 +46,6 @@ pub fn set_value(key: &str, value: String) {
         }
         "music_dir" => {
             CONFIG.lock().set_music_dir(value.to_string());
-        },
-        "discord_enabled" => {
-            CONFIG.lock().set_discord(value.parse::<bool>().expect("Invalid boolean value"));
         }
         _ => error!("Invalid config value key"),
     }

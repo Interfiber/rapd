@@ -1,0 +1,12 @@
+[package]
+name = "musik"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde_json = "1.0.87" # parse, and create json
+serde = { version = "1.0", features = ["derive"] } # serialize, and deserialize structs
+tui = "0.19" # terminal user interface
+crossterm = "0.25" # terminal keybind handling

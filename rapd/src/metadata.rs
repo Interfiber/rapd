@@ -81,7 +81,6 @@ impl RapdMetadata {
         self.album = String::from(tag.album().unwrap_or("Unknown album"));
 
         if !tag.pictures().is_empty() {
-            debug!("Extracting album art");
             let pic_data = tag.pictures()[0].data();
             let album_art_dir = Self::get_album_art_cache();
             let mime = tag.pictures()[0].mime_type();
@@ -102,7 +101,7 @@ impl RapdMetadata {
             trace!("Checking for file: {}", album_art_file);
 
             if !Path::new(&album_art_file).exists() {
-                trace!("Writing extracted data to disk");
+                debug!("Writing extracted album art data to disk");
 
                 std::fs::write(&album_art_file, pic_data).expect("Failed to write image");
             }

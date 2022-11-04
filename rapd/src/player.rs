@@ -131,7 +131,15 @@ impl RapdPlayer {
 
     /// Get the total length of the song
     pub fn get_length(&self) -> &RapdPlayerTime {
-        self.metadata.as_ref().unwrap().get_length()
+        if self.metadata.is_none() {
+            &RapdPlayerTime {
+                hour: 0,
+                min: 0,
+                second: 0,
+            }
+        } else {
+            self.metadata.as_ref().unwrap().get_length()
+        }
     }
 
     /// Get the current state of the player

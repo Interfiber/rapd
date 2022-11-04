@@ -74,10 +74,9 @@ pub fn file_metadata(file: String) {
     } else {
         print!("{}", line);
     }
-
 }
 
-pub fn time(){
+pub fn time() {
     let mut server = RapdServer::new();
     server.connect();
 
@@ -94,7 +93,7 @@ pub fn time(){
     }
 }
 
-pub fn length(){
+pub fn length() {
     let mut server = RapdServer::new();
     server.connect();
 
@@ -111,7 +110,7 @@ pub fn length(){
     }
 }
 
-pub fn stop(){
+pub fn stop() {
     let mut server = RapdServer::new();
     server.connect();
 
@@ -128,7 +127,7 @@ pub fn stop(){
     }
 }
 
-pub fn pause(){
+pub fn pause() {
     let mut server = RapdServer::new();
     server.connect();
 

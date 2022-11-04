@@ -16,7 +16,6 @@ mod notifications;
 mod player;
 mod server;
 mod state;
-mod discord;
 
 fn main() {
     // init logger

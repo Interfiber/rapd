@@ -43,7 +43,13 @@ impl RapdServer {
         self.stream = match TcpStream::connect("127.0.0.1:6702") {
             Ok(s) => Some(s),
             Err(err) => {
-                println!("Failed to connect to RAPD server, error: {}", err);
+                println!(
+                    "{}",
+                    crate::utils::connect_error(format!(
+                        "Failed to connect to RAPD server, error: {}",
+                        err
+                    ))
+                );
                 std::process::exit(1);
             }
         };

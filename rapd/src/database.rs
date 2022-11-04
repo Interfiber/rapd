@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::ffi::OsString;
 use std::io::Read;
 use std::io::Write;
 use std::path::Path;
@@ -151,8 +152,14 @@ pub fn rebuild_db() {
 
     for path in paths {
         let file = path.unwrap().path();
+        let ext = file
+            .extension()
+            .unwrap_or(&OsString::from("invalid"))
+            .to_str()
+            .unwrap()
+            .to_string();
 
-        if !file.is_dir() {
+        if !file.is_dir() && ext == "mp3" {
             let path_name = file.as_os_str().to_str().unwrap().to_string();
 
             DATABASE.lock().add_file(path_name);

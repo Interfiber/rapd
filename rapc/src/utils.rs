@@ -1,5 +1,5 @@
+use crate::server::{RapdCommand, RapdServer};
 use serde_json::{json, Value};
-use crate::server::{RapdServer, RapdCommand};
 
 pub fn client_error(msg: String) -> Value {
     json!({
@@ -9,7 +9,15 @@ pub fn client_error(msg: String) -> Value {
     })
 }
 
-pub fn ping(){
+pub fn connect_error(msg: String) -> Value {
+    json!({
+        "message": msg,
+        "failed": true,
+        "client_error": true,
+    })
+}
+
+pub fn ping() {
     let mut server = RapdServer::new();
 
     server.connect();
