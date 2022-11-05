@@ -25,7 +25,7 @@ pub struct RapdAudioFile {
 
 #[derive(Serialize, Deserialize)]
 pub struct RapdPlaylist {
-    files: Vec<String>, // list of file UUID's in that playlist
+    files: Vec<String>, // list files in the playlist
     create_date: i32,
     playlist_name: String,
     playlist_desc: String,
@@ -83,6 +83,11 @@ impl RapdDatabase {
         let f = RapdAudioFile { file, id };
 
         self.files.push(f);
+    }
+
+    /// Create a new playlist
+    pub fn add_playlist(&mut self){
+        // TODO
     }
 
     /// Removes all files from the database

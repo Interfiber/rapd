@@ -12,7 +12,7 @@ lazy_static! {
         Mutex::new(crate::audio::backends::symphonia::SymphoniaAudioBackend::new());
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum PlayerState {
     Playing,
     Paused,
@@ -29,7 +29,7 @@ impl PlayerState {
     }
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct RapdPlayerTime {
     pub hour: u64,
     pub min: u64,
@@ -125,8 +125,8 @@ impl RapdPlayer {
     }
 
     /// Get position in song
-    pub fn get_time(&self) -> &RapdPlayerTime {
-        &self.time
+    pub fn get_time(&self) -> RapdPlayerTime {
+        self.time.to_owned()
     }
 
     /// Get the total length of the song
@@ -143,13 +143,13 @@ impl RapdPlayer {
     }
 
     /// Get the current state of the player
-    pub fn get_state(&self) -> &PlayerState {
-        &self.state
+    pub fn get_state(&self) -> PlayerState {
+        self.state.to_owned()
     }
 
     /// Get the current playing file
-    pub fn get_file(&self) -> &String {
-        &self.file
+    pub fn get_file(&self) -> String {
+        self.file.to_owned()
     }
 
     /// Updates the position in the track, and updates states as needed
@@ -225,8 +225,12 @@ impl RapdPlayer {
     }
 
     /// Get the metadata for the current player
-    pub fn get_metadata(&self) -> &RapdMetadata {
-        self.metadata.as_ref().unwrap()
+    pub fn get_metadata(&self) -> RapdMetadata {
+        if self.metadata.is_none(){
+            RapdMetadata::new(String::from("No file"))
+        } else {
+            self.metadata.as_ref().unwrap().to_owned()
+        }
     }
 
     /// Start the RapdPlayer, should be called on another thread seperate from the main thread in

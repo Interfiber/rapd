@@ -60,7 +60,7 @@ impl RapdCommand for PlayFileCommand {
 
             let player = PLAYER.lock();
             let player_state = player.get_state();
-            if player_state == &PlayerState::Playing {
+            if player_state == PlayerState::Playing {
                 channel.send(String::from("stop_player:_")).unwrap();
             }
 
@@ -111,7 +111,7 @@ impl RapdCommand for TogglePauseCommand {
         #[allow(unused_assignments)]
         let mut paused = false;
 
-        if player.get_state() == &PlayerState::Playing {
+        if player.get_state() == PlayerState::Playing {
             channel.send(String::from("pause_player:_")).unwrap();
             paused = true;
         } else {

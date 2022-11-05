@@ -49,13 +49,13 @@ pub fn alert_paused_player() {
     if cfg.notifications() {
         let player = PLAYER.lock();
 
-        if player.get_state() == &PlayerState::Paused {
+        if player.get_state() == PlayerState::Paused {
             Notification::new()
                 .summary("Rust Audio Player Daemon")
                 .body("Paused playback")
                 .show()
                 .expect("Failed to show notification");
-        } else if player.get_state() == &PlayerState::Playing {
+        } else if player.get_state() == PlayerState::Playing {
             Notification::new()
                 .summary("Rust Audio Player Daemon")
                 .body("Unpaused playback")

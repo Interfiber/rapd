@@ -15,3 +15,4 @@ Rust audio player daemon 2.0
 - Better rapc code readability
 - More verbose rapc command line interface
 - Better music database
+- Playlists (TODO)

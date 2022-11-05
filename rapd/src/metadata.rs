@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::player::RapdPlayerTime;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct RapdMetadata {
     file: String,
     length: RapdPlayerTime,
