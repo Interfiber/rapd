@@ -5,9 +5,11 @@ use serde_json::json;
 use crate::json::{RapdCommandResponse, RapdMessage};
 
 use super::{
-    GetFileCommand, GetLengthCommand, GetMetadataCommand, GetMusicFilesCommand, GetStateCommand,
-    GetTimeCommand, PingCommand, PlayFileCommand, RapdCommand, RebuildDatabaseCommand,
-    SetConfigValueCommand, StopCommand, TogglePauseCommand,
+    AddFileToPlaylistCommand, CreatePlaylistCommand, GetFileCommand, GetFilesInPlaylistCommand,
+    GetLengthCommand, GetMetadataCommand, GetMusicFilesCommand, GetPlaylistsCommand,
+    GetStateCommand, GetTimeCommand, PingCommand, PlayFileCommand, RapdCommand,
+    RebuildDatabaseCommand, RemoveFileFromPlaylistCommand, SetConfigValueCommand, StopCommand,
+    TogglePauseCommand,
 };
 
 pub struct RapdCommandManager {
@@ -59,4 +61,12 @@ pub fn init_manager(manager: &mut RapdCommandManager) {
     manager.add_cmd("rebuild_database", RebuildDatabaseCommand {});
     manager.add_cmd("config_set", SetConfigValueCommand {});
     manager.add_cmd("db_get_files", GetMusicFilesCommand {});
+    manager.add_cmd("db_create_playlist", CreatePlaylistCommand {});
+    manager.add_cmd("db_add_file_to_playlist", AddFileToPlaylistCommand {});
+    manager.add_cmd(
+        "db_remove_file_from_playlist",
+        RemoveFileFromPlaylistCommand {},
+    );
+    manager.add_cmd("db_get_playlists", GetPlaylistsCommand {});
+    manager.add_cmd("db_get_files_in_playlist", GetFilesInPlaylistCommand {});
 }

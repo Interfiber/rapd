@@ -1,6 +1,7 @@
 use std::path::Path;
 
 use crate::{
+    database::{save_db, RapdPlaylist},
     metadata::RapdMetadata,
     state::{DATABASE, PLAYER},
 };
@@ -32,6 +33,11 @@ pub struct GetMetadataCommand {}
 pub struct RebuildDatabaseCommand {}
 pub struct SetConfigValueCommand {}
 pub struct GetMusicFilesCommand {}
+pub struct CreatePlaylistCommand {}
+pub struct AddFileToPlaylistCommand {}
+pub struct RemoveFileFromPlaylistCommand {}
+pub struct GetPlaylistsCommand {}
+pub struct GetFilesInPlaylistCommand {}
 
 // end section: Commands
 
@@ -190,6 +196,83 @@ impl RapdCommand for GetMusicFilesCommand {
         let db = DATABASE.lock();
 
         RapdCommandResponse::new(json!(db.get_files()), false)
+    }
+}
+
+impl RapdCommand for CreatePlaylistCommand {
+    fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
+        if msg.params.len() == 2 {
+            DATABASE.lock().add_playlist(RapdPlaylist::new(
+                msg.params[0].to_owned(),
+                msg.params[1].to_owned(),
+            ));
+            save_db();
+
+            RapdCommandResponse::new(json!("Added new playlist to database"), false)
+        } else {
+            RapdCommandResponse::new(json!("This command takes two params: NAME, DESC"), true)
+        }
+    }
+}
+
+impl RapdCommand for AddFileToPlaylistCommand {
+    fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
+        if msg.params.len() == 2 {
+            DATABASE
+                .lock()
+                .add_file_to_playlist(msg.params[0].to_owned(), msg.params[1].to_owned());
+            save_db();
+
+            RapdCommandResponse::new(json!("Updated playlist"), false)
+        } else {
+            RapdCommandResponse::new(json!("This command takes two params: TARGET, FILE"), true)
+        }
+    }
+}
+
+impl RapdCommand for RemoveFileFromPlaylistCommand {
+    fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
+        if msg.params.len() == 2 {
+            DATABASE
+                .lock()
+                .remove_file_from_playlist(msg.params[0].to_owned(), msg.params[1].to_owned());
+            save_db();
+
+            RapdCommandResponse::new(json!("Updated playlist"), false)
+        } else {
+            RapdCommandResponse::new(json!("This command takes two params: TARGET, FILE"), true)
+        }
+    }
+}
+
+impl RapdCommand for GetPlaylistsCommand {
+    fn execute(&self, _msg: RapdMessage) -> RapdCommandResponse {
+        let db = DATABASE.lock();
+        let playlists = db.get_playlists();
+        let mut result = vec![];
+
+        for playlist in playlists.iter() {
+            result.push(playlist.playlist_name.clone());
+        }
+
+        RapdCommandResponse::new(json!(result), false)
+    }
+}
+
+impl RapdCommand for GetFilesInPlaylistCommand {
+    fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
+        if msg.params.len() == 2 {
+            let db = DATABASE.lock();
+            let list = db.get_playlist(msg.params[0].clone());
+
+            if list.is_none() {
+                RapdCommandResponse::new(json!("No such playlist"), true)
+            } else {
+                RapdCommandResponse::new(json!(list.unwrap()), false)
+            }
+        } else {
+            RapdCommandResponse::new(json!("This command takes two params: NAME"), true)
+        }
     }
 }
 

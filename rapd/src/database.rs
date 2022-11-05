@@ -25,10 +25,21 @@ pub struct RapdAudioFile {
 
 #[derive(Serialize, Deserialize)]
 pub struct RapdPlaylist {
-    files: Vec<String>, // list files in the playlist
-    create_date: i32,
-    playlist_name: String,
-    playlist_desc: String,
+    pub files: Vec<String>, // list files in the playlist
+    pub create_date: i32,
+    pub playlist_name: String,
+    pub playlist_desc: String,
+}
+
+impl RapdPlaylist {
+    pub fn new(name: String, desc: String) -> RapdPlaylist {
+        RapdPlaylist {
+            files: vec![],
+            create_date: 000,
+            playlist_name: name,
+            playlist_desc: desc,
+        }
+    }
 }
 
 impl RapdDatabase {
@@ -86,8 +97,35 @@ impl RapdDatabase {
     }
 
     /// Create a new playlist
-    pub fn add_playlist(&mut self){
-        // TODO
+    pub fn add_playlist(&mut self, playlist: RapdPlaylist) {
+        info!("Adding playlist to database: {}", playlist.playlist_name);
+        self.playlists.push(playlist);
+    }
+
+    /// Add files to a playlist
+    pub fn add_file_to_playlist(&mut self, name: String, file: String) {
+        for playlist in self.playlists.iter_mut() {
+            if playlist.playlist_name == name {
+                playlist.files.push(file.clone());
+                break;
+            }
+        }
+
+        info!("Added file {} to playlist {}", file, name);
+    }
+
+    /// Remove a file from a playlist
+    pub fn remove_file_from_playlist(&mut self, name: String, file: String) {
+        for playlist in self.playlists.iter_mut() {
+            if playlist.playlist_name == name {
+                // https://stackoverflow.com/questions/26243025/remove-an-element-from-a-vector
+
+                let index = playlist.files.iter().position(|x| *x == file).unwrap();
+                playlist.files.remove(index);
+            }
+        }
+
+        info!("Remove file {} from playlist {}", file, name);
     }
 
     /// Removes all files from the database
@@ -98,6 +136,29 @@ impl RapdDatabase {
     /// Get files in database
     pub fn get_files(&self) -> &Vec<RapdAudioFile> {
         &self.files
+    }
+
+    /// Get playlists in database
+    pub fn get_playlists(&self) -> &Vec<RapdPlaylist> {
+        &self.playlists
+    }
+
+    /// Get playlist info
+    pub fn get_playlist(&self, name: String) -> Option<&RapdPlaylist> {
+        let mut result = vec![];
+        for playlist in self.playlists.iter() {
+            if playlist.playlist_name == name {
+                result.push(playlist);
+                break;
+            }
+        }
+
+        if result.is_empty() {
+            error!("No playlist found with name: {}", name);
+            None
+        } else {
+            Some(result[0])
+        }
     }
 }
 

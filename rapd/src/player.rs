@@ -226,7 +226,7 @@ impl RapdPlayer {
 
     /// Get the metadata for the current player
     pub fn get_metadata(&self) -> RapdMetadata {
-        if self.metadata.is_none(){
+        if self.metadata.is_none() {
             RapdMetadata::new(String::from("No file"))
         } else {
             self.metadata.as_ref().unwrap().to_owned()
