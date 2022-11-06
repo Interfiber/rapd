@@ -38,6 +38,7 @@ pub struct AddFileToPlaylistCommand {}
 pub struct RemoveFileFromPlaylistCommand {}
 pub struct GetPlaylistsCommand {}
 pub struct GetFilesInPlaylistCommand {}
+pub struct RemovePlaylistCommand {}
 
 // end section: Commands
 
@@ -261,7 +262,7 @@ impl RapdCommand for GetPlaylistsCommand {
 
 impl RapdCommand for GetFilesInPlaylistCommand {
     fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
-        if msg.params.len() == 2 {
+        if msg.params.len() == 1 {
             let db = DATABASE.lock();
             let list = db.get_playlist(msg.params[0].clone());
 
@@ -271,7 +272,24 @@ impl RapdCommand for GetFilesInPlaylistCommand {
                 RapdCommandResponse::new(json!(list.unwrap()), false)
             }
         } else {
-            RapdCommandResponse::new(json!("This command takes two params: NAME"), true)
+            RapdCommandResponse::new(json!("This command takes one param: NAME"), true)
+        }
+    }
+}
+
+impl RapdCommand for RemovePlaylistCommand {
+    fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
+        info!("{:#?}", msg);
+        if msg.params.len() == 1 {
+            let name = &msg.params[0];
+
+            DATABASE.lock().remove_playlist(name.clone());
+            save_db();
+            info!("Removed playlist: {}", name);
+            RapdCommandResponse::new(json!("Removed playlist"), false)
+        } else {
+            error!("Not enough params!");
+            RapdCommandResponse::new(json!("This command takes one param: NAME"), true)
         }
     }
 }

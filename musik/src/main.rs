@@ -1,3 +1,5 @@
+#![allow(clippy::if_same_then_else)]
+
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
@@ -13,20 +15,40 @@ use tui::{
     backend::{Backend, CrosstermBackend},
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
+    text::{Spans, Text},
     widgets::{Block, Borders, Clear, Gauge, List, ListItem, ListState, Paragraph},
     Frame, Terminal,
 };
 
 mod rapd;
 
+#[derive(PartialEq)]
+enum Mode {
+    Database,
+    Playlists,
+    ViewingPlaylist,
+    AddFileToPlaylist,
+}
+
 pub struct App<'a> {
     db_state: ListState,
     db_files: Vec<ListItem<'a>>,
+    playlist_state: ListState,
+    playlists: Vec<ListItem<'a>>,
     files: Vec<String>,
     length: RapdPlayerTime,
     time: RapdPlayerTime,
     metadata: Option<RapdMetadata>,
     keybinds_open: bool,
+    playlist_open: bool,
+    mode: Mode,
+    playlist_names: Vec<String>,
+    playlist_files: Vec<ListItem<'a>>,
+    playlist_files_state: ListState,
+    playlist_desc: String,
+    playlist_paths: Vec<String>,
+    viewing_playlist: bool,
+    playlist_name: String,
 }
 
 impl<'a> App<'a> {
@@ -47,6 +69,17 @@ impl<'a> App<'a> {
             files: vec![],
             metadata: Default::default(),
             keybinds_open: false,
+            mode: Mode::Database,
+            playlist_state: ListState::default(),
+            playlists: vec![],
+            playlist_names: vec![],
+            playlist_open: false,
+            playlist_files: vec![],
+            playlist_files_state: ListState::default(),
+            playlist_desc: String::from("No description!"),
+            playlist_paths: vec![],
+            viewing_playlist: false,
+            playlist_name: String::from(""),
         };
 
         l.db_state.select(Some(0));
@@ -61,6 +94,21 @@ impl<'a> App<'a> {
             let line = format!("{} - {}", metadata.artist, metadata.title);
             self.db_files.push(ListItem::new(line));
             self.files.push(metadata.file.clone());
+        }
+    }
+
+    pub fn load_playlists(&mut self) {
+        self.playlist_names.clear();
+        self.playlists.clear();
+        self.playlist_paths.clear();
+        self.playlist_files_state.select(Some(0));
+
+        let playlists = rapd::playlists();
+
+        for playlist in playlists.iter() {
+            self.playlists
+                .push(ListItem::new(playlist.playlist_name.to_owned()));
+            self.playlist_names.push(playlist.playlist_name.to_owned());
         }
     }
 
@@ -179,6 +227,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // create app and run it
     let mut app = App::new();
     app.load_database();
+    app.load_playlists();
     let res = run_app(&mut terminal, &mut app);
 
     // restore terminal
@@ -221,14 +270,24 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::Result<
 
                 if let KeyCode::F(1) = key.code {
                     // play file
-                    let selected = app.db_state.selected().unwrap_or(0);
-                    rapd::play_file(app.files[selected].to_owned(), false);
+                    if app.mode == Mode::Database {
+                        let selected = app.db_state.selected().unwrap_or(0);
+                        rapd::play_file(app.files[selected].to_owned(), false);
+                    } else if app.mode == Mode::ViewingPlaylist {
+                        let selected = app.playlist_files_state.selected().unwrap_or(0);
+                        rapd::play_file(app.playlist_paths[selected].to_owned(), false);
+                    }
                 }
 
                 if let KeyCode::F(2) = key.code {
                     // loop file
-                    let selected = app.db_state.selected().unwrap_or(0);
-                    rapd::play_file(app.files[selected].to_owned(), true);
+                    if app.mode == Mode::Database {
+                        let selected = app.db_state.selected().unwrap_or(0);
+                        rapd::play_file(app.files[selected].to_owned(), true);
+                    } else if app.mode == Mode::ViewingPlaylist {
+                        let selected = app.playlist_files_state.selected().unwrap_or(0);
+                        rapd::play_file(app.playlist_paths[selected].to_owned(), true);
+                    }
                 }
 
                 if let KeyCode::F(3) = key.code {
@@ -241,44 +300,192 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::Result<
                     rapd::pause();
                 }
 
+                if let KeyCode::F(7) = key.code {
+                    // add item to selected playlist
+                    if app.mode == Mode::Database {
+                        app.mode = Mode::AddFileToPlaylist;
+                        app.viewing_playlist = true;
+                    } else if app.mode == Mode::AddFileToPlaylist {
+                        app.mode = Mode::Playlists;
+                        app.viewing_playlist = false;
+                    }
+                }
+
                 if let KeyCode::Enter = key.code {
-                    // view file info
-                    let selected = app.db_state.selected().unwrap_or(0);
-                    app.update_metadata(app.files[selected].to_owned());
+                    // toggle selected view
+                    if app.mode == Mode::Database {
+                        app.mode = Mode::Playlists;
+                        app.playlist_state.select(Some(0));
+                    } else if app.mode == Mode::AddFileToPlaylist {
+                        // ignore
+                    } else {
+                        app.mode = Mode::Database;
+                    }
+                }
+
+                if let KeyCode::Char('d') = key.code {
+                    if app.mode == Mode::Playlists {
+                        // remove playlist
+                        let selected = app.playlist_state.selected().unwrap_or(0);
+                        let name = app.playlist_names[selected].to_owned();
+
+                        rapd::remove_playlist(name);
+                        app.load_playlists();
+                    }
                 }
 
                 if let KeyCode::F(5) = key.code {
                     // open keybinds
-                    app.keybinds_open = !app.keybinds_open;
+                    if app.mode != Mode::ViewingPlaylist {
+                        app.keybinds_open = !app.keybinds_open;
+                    }
                 }
 
-                if let KeyCode::Down = key.code {
-                    let i = match app.db_state.selected() {
-                        Some(i) => {
-                            if i >= app.db_files.len() - 1 {
-                                0
-                            } else {
-                                i + 1
-                            }
-                        }
-                        None => 0,
-                    };
+                if let KeyCode::F(6) = key.code {
+                    // expand playlist
+                    if app.mode == Mode::ViewingPlaylist {
+                        app.playlist_open = false;
+                        app.mode = Mode::Playlists;
+                    } else if app.mode == Mode::Playlists {
+                        let selected = app.playlist_state.selected().unwrap_or(0);
+                        let playlist_name = &app.playlist_names[selected];
 
-                    app.db_state.select(Some(i));
+                        // get playlist info
+                        let mut server = RapdServer::new();
+                        server.connect();
+
+                        let info = rapd::playlist_info(String::from(playlist_name), &mut server);
+
+                        app.playlist_files.clear();
+                        app.playlist_paths.clear();
+
+                        for file in info.files {
+                            let metadata = rapd::metadata_for_file(&mut server, file.to_owned());
+                            app.playlist_files.push(ListItem::new(format!(
+                                "{} - {}",
+                                metadata.artist, metadata.title
+                            )));
+                            app.playlist_paths.push(file);
+                        }
+
+                        app.playlist_desc = info.playlist_desc;
+
+                        server.close();
+
+                        app.playlist_open = true;
+                        app.mode = Mode::ViewingPlaylist;
+                        app.playlist_files_state.select(Some(1));
+                    }
+                }
+                if let KeyCode::Down = key.code {
+                    if app.mode == Mode::Database {
+                        let i = match app.db_state.selected() {
+                            Some(i) => {
+                                if i >= app.db_files.len() - 1 {
+                                    0
+                                } else {
+                                    i + 1
+                                }
+                            }
+                            None => 0,
+                        };
+
+                        app.db_state.select(Some(i));
+                    } else if app.mode == Mode::ViewingPlaylist {
+                        let i = match app.playlist_files_state.selected() {
+                            Some(i) => {
+                                if i >= app.playlist_files.len() - 1 {
+                                    0
+                                } else {
+                                    i + 1
+                                }
+                            }
+                            None => 0,
+                        };
+
+                        app.playlist_files_state.select(Some(i));
+                    } else {
+                        let i = match app.playlist_state.selected() {
+                            Some(i) => {
+                                if app.playlists.is_empty() {
+                                    0
+                                } else if i >= app.playlists.len() - 1 {
+                                    0
+                                } else {
+                                    i + 1
+                                }
+                            }
+                            None => 0,
+                        };
+
+                        app.playlist_state.select(Some(i));
+                    }
+                }
+
+                if app.mode == Mode::AddFileToPlaylist {
+                    match key.code {
+                        KeyCode::Char(c) => {
+                            app.playlist_name.push(c);
+                        }
+                        KeyCode::Backspace => {
+                            app.playlist_name.pop();
+                        }
+                        KeyCode::Enter => {
+                            // get selected file
+                            let selected = app.db_state.selected().unwrap_or(0);
+                            let file = &app.files[selected];
+                            rapd::add_file_to_playlist(
+                                app.playlist_name.to_owned(),
+                                String::from(file),
+                            );
+                            app.mode = Mode::Playlists;
+                            app.viewing_playlist = false;
+                            app.playlist_name = String::from("");
+                        }
+                        _ => {}
+                    }
                 }
 
                 if let KeyCode::Up = key.code {
-                    let i = match app.db_state.selected() {
-                        Some(i) => {
-                            if i == 0 {
-                                app.db_files.len() - 1
-                            } else {
-                                i - 1
+                    if app.mode == Mode::Database {
+                        let i = match app.db_state.selected() {
+                            Some(i) => {
+                                if i == 0 {
+                                    app.db_files.len() - 1
+                                } else {
+                                    i - 1
+                                }
                             }
-                        }
-                        None => 0,
-                    };
-                    app.db_state.select(Some(i));
+                            None => 0,
+                        };
+                        app.db_state.select(Some(i));
+                    } else if app.mode == Mode::ViewingPlaylist {
+                        let i = match app.playlist_files_state.selected() {
+                            Some(i) => {
+                                if i == 0 {
+                                    app.playlist_paths.len() - 1
+                                } else {
+                                    i - 1
+                                }
+                            }
+                            None => 0,
+                        };
+                        app.playlist_files_state.select(Some(i));
+                    } else {
+                        let i = match app.playlist_state.selected() {
+                            Some(i) => {
+                                if app.playlists.is_empty() {
+                                    0
+                                } else if i == 0 {
+                                    app.playlists.len() - 1
+                                } else {
+                                    i - 1
+                                }
+                            }
+                            None => 0,
+                        };
+                        app.playlist_state.select(Some(i));
+                    }
                 }
             }
         }
@@ -299,8 +506,12 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         )
         .split(f.size());
 
+    let mut title = "Music";
+    if app.mode == Mode::Database {
+        title = "Music [SELECTED]";
+    }
     let list = List::new(app.db_files.to_vec())
-        .block(Block::default().title("Database").borders(Borders::ALL))
+        .block(Block::default().title(title).borders(Borders::ALL))
         .style(tui::style::Style::default().fg(Color::White))
         .highlight_style(
             tui::style::Style::default()
@@ -310,9 +521,21 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .highlight_symbol(">> ");
     f.render_stateful_widget(list, chunks[0], &mut app.db_state);
 
-    let info = Paragraph::new(app.get_metadata())
-        .block(Block::default().title("Metadata").borders(Borders::ALL));
-    f.render_widget(info, chunks[1]);
+    let mut title = "Playlists";
+    if app.mode == Mode::Playlists {
+        title = "Playlists [SELECTED]";
+    }
+
+    let playlists = List::new(app.playlists.to_vec())
+        .block(Block::default().title(title).borders(Borders::ALL))
+        .style(tui::style::Style::default().fg(Color::White))
+        .highlight_style(
+            tui::style::Style::default()
+                .add_modifier(Modifier::BOLD)
+                .add_modifier(Modifier::ITALIC),
+        )
+        .highlight_symbol(">> ");
+    f.render_stateful_widget(playlists, chunks[1], &mut app.playlist_state);
 
     let progress = Gauge::default()
         .block(
@@ -339,10 +562,45 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     f.render_widget(progress, chunks_2[1]);
 
     if app.keybinds_open {
-        let keybinds = Paragraph::new("[F5] toggle keybinds\n[F1] play selected file\n[F2] loop selected file\n[F3] stop player\n[F4] pause player\n[ENTER] view metadata for file").block(Block::default().borders(Borders::ALL).title("Keybinds"));
-        let area = centered_rect(60, 20, f.size());
+        let keybinds = Paragraph::new("[F5] toggle keybinds\n[F1] play selected file\n[F2] loop selected file\n[F3] stop player\n[F4] pause player\n[ENTER] toggle to playlists\n[F6] expand playlist").block(Block::default().borders(Borders::ALL).title("Keybinds"));
+        let area = centered_rect(60, 24, f.size());
 
         f.render_widget(Clear, area); // clear background
         f.render_widget(keybinds, area);
+    } else if app.playlist_open {
+        let files = List::new(app.playlist_files.to_vec())
+            .block(
+                Block::default()
+                    .title(format!("Playlist - {}", app.playlist_desc))
+                    .borders(Borders::ALL),
+            )
+            .style(tui::style::Style::default().fg(Color::White))
+            .highlight_style(
+                tui::style::Style::default()
+                    .add_modifier(Modifier::BOLD)
+                    .add_modifier(Modifier::ITALIC),
+            )
+            .highlight_symbol(">> ");
+
+        let area = centered_rect(60, 25, f.size());
+
+        f.render_widget(Clear, area);
+        f.render_stateful_widget(files, area, &mut app.playlist_files_state);
+    } else if app.viewing_playlist {
+        let style = Style::default().add_modifier(Modifier::RAPID_BLINK);
+
+        let mut text = Text::from(Spans::from(app.playlist_name.clone()));
+        text.patch_style(style);
+
+        let input = Paragraph::new(app.playlist_name.as_ref()).block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title("Enter playlist name, press ENTER to confirm"),
+        );
+
+        let area = centered_rect(50, 10, f.size());
+
+        f.render_widget(Clear, area);
+        f.render_widget(input, area);
     }
 }

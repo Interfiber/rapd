@@ -8,8 +8,8 @@ use super::{
     AddFileToPlaylistCommand, CreatePlaylistCommand, GetFileCommand, GetFilesInPlaylistCommand,
     GetLengthCommand, GetMetadataCommand, GetMusicFilesCommand, GetPlaylistsCommand,
     GetStateCommand, GetTimeCommand, PingCommand, PlayFileCommand, RapdCommand,
-    RebuildDatabaseCommand, RemoveFileFromPlaylistCommand, SetConfigValueCommand, StopCommand,
-    TogglePauseCommand,
+    RebuildDatabaseCommand, RemoveFileFromPlaylistCommand, RemovePlaylistCommand,
+    SetConfigValueCommand, StopCommand, TogglePauseCommand,
 };
 
 pub struct RapdCommandManager {
@@ -69,4 +69,5 @@ pub fn init_manager(manager: &mut RapdCommandManager) {
     );
     manager.add_cmd("db_get_playlists", GetPlaylistsCommand {});
     manager.add_cmd("db_get_files_in_playlist", GetFilesInPlaylistCommand {});
+    manager.add_cmd("db_remove_playlist", RemovePlaylistCommand {});
 }

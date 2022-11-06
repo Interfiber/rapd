@@ -23,7 +23,7 @@ pub struct RapdAudioFile {
     id: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq, Eq)]
 pub struct RapdPlaylist {
     pub files: Vec<String>, // list files in the playlist
     pub create_date: i32,
@@ -126,6 +126,17 @@ impl RapdDatabase {
         }
 
         info!("Remove file {} from playlist {}", file, name);
+    }
+
+    /// Removes a playlist from the database
+    pub fn remove_playlist(&mut self, name: String) {
+        let index = self
+            .playlists
+            .iter()
+            .position(|x| *x.playlist_name == name)
+            .unwrap();
+
+        self.playlists.remove(index);
     }
 
     /// Removes all files from the database

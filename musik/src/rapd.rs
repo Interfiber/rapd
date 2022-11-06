@@ -34,12 +34,20 @@ pub struct RapdPlayerTime {
     pub second: u64,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct RapdPlaylist {
+    pub files: Vec<String>, // list files in the playlist
+    pub create_date: i32,
+    pub playlist_name: String,
+    pub playlist_desc: String,
+}
+
 impl RapdCommand {
     pub fn new(command: String, params: Vec<String>) -> RapdCommand {
         RapdCommand {
             command,
             params,
-            client_name: String::from("rapc"),
+            client_name: String::from("musik"),
         }
     }
 
@@ -234,4 +242,88 @@ pub fn pause() {
     server.write_cmd(cmd);
     server.close();
     // idc about the result
+}
+
+pub fn playlist_info(name: String, server: &mut RapdServer) -> RapdPlaylist {
+    let cmd = RapdCommand::new(String::from("db_get_files_in_playlist"), vec![name]);
+
+    server.write_cmd(cmd);
+
+    let line = server.read_line();
+
+    if line.is_empty() {
+        println!("Line empty!");
+        std::process::exit(1);
+    } else {
+        let r: Value = serde_json::from_str(&line).expect("Failed to parse result!");
+
+        if r["failed"].as_bool().unwrap() {
+            println!("Failed to get playlist: {}", r);
+            std::process::exit(1);
+        } else {
+            let p: RapdPlaylist =
+                serde_json::from_value(r["message"].to_owned()).expect("Failed to parse result!");
+            p
+        }
+    }
+}
+
+pub fn playlists() -> Vec<RapdPlaylist> {
+    let mut server = RapdServer::new();
+    server.connect();
+
+    let cmd = RapdCommand::new(String::from("db_get_playlists"), vec![]);
+
+    server.write_cmd(cmd);
+
+    let line = server.read_line();
+
+    if line.is_empty() {
+        println!("Line empty!");
+        std::process::exit(1);
+    } else {
+        let r: Value = serde_json::from_str(&line).expect("Failed to parse result!");
+        let p: Vec<Value> =
+            serde_json::from_value(r["message"].to_owned()).expect("Failed to parse result!");
+        let mut result: Vec<RapdPlaylist> = vec![];
+
+        for name in p.iter() {
+            // get playlist info
+            result.push(playlist_info(
+                name.to_string().replace('"', ""),
+                &mut server,
+            ));
+        }
+
+        server.close();
+
+        result
+    }
+}
+
+pub fn add_file_to_playlist(name: String, file: String) {
+    let mut server = RapdServer::new();
+    server.connect();
+
+    let cmd = RapdCommand::new(String::from("db_add_file_to_playlist"), vec![name, file]);
+
+    server.write_cmd(cmd);
+
+    // idc about the result
+    server.close();
+}
+
+pub fn remove_playlist(name: String) {
+    let mut server = RapdServer::new();
+    server.connect();
+
+    let cmd = RapdCommand::new(String::from("db_remove_playlist"), vec![name]);
+
+    server.write_cmd(cmd);
+
+    // wait for the delete to be confirmed
+    server.read_line();
+
+    // idc about the result
+    server.close();
 }
