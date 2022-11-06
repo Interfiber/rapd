@@ -3,6 +3,7 @@ use clap::{arg, Arg, Command};
 mod config;
 mod database;
 mod player;
+mod playlists;
 mod server;
 mod utils;
 
@@ -18,6 +19,39 @@ fn cli() -> Command {
                 .about("Database operations")
                 .subcommand(Command::new("rebuild").about("Rebuild database"))
                 .subcommand(Command::new("files").about("Get database files")),
+        )
+        .subcommand(
+            Command::new("playlist")
+                .about("Playlist operations")
+                .subcommand(Command::new("list").about("List all playlists in database"))
+                .subcommand(
+                    Command::new("files")
+                        .arg(Arg::new("name"))
+                        .about("Lists all files in a playlist"),
+                )
+                .subcommand(
+                    Command::new("create")
+                        .arg(Arg::new("name"))
+                        .arg(Arg::new("desc"))
+                        .about("Create a playlist"),
+                )
+                .subcommand(
+                    Command::new("add_file")
+                        .arg(Arg::new("name"))
+                        .arg(Arg::new("file"))
+                        .about("Add a file to a playlist"),
+                )
+                .subcommand(
+                    Command::new("remove")
+                        .arg(Arg::new("name"))
+                        .about("Remove a playlist"),
+                )
+                .subcommand(
+                    Command::new("remove_file")
+                        .arg(Arg::new("name"))
+                        .arg(Arg::new("file"))
+                        .about("Remove a file from a playlist"),
+                ),
         )
         .subcommand(
             Command::new("config")
@@ -91,6 +125,68 @@ fn main() {
         }
         Some(("ping", _)) => {
             utils::ping();
+        }
+        Some(("playlist", sub_matches)) => {
+            let operation = sub_matches.subcommand().unwrap_or(("help", sub_matches));
+
+            match operation {
+                ("create", args) => {
+                    let name = args
+                        .get_one::<String>("name")
+                        .map(|s| s.as_str())
+                        .expect("No name!");
+                    let desc = args
+                        .get_one::<String>("desc")
+                        .map(|s| s.as_str())
+                        .expect("No description!");
+
+                    playlists::create(String::from(name), String::from(desc));
+                }
+                ("add_file", args) => {
+                    let name = args
+                        .get_one::<String>("name")
+                        .map(|s| s.as_str())
+                        .expect("No name!");
+                    let file = args
+                        .get_one::<String>("file")
+                        .map(|s| s.as_str())
+                        .expect("No file!");
+
+                    playlists::add_file(String::from(name), String::from(file));
+                }
+                ("remove", args) => {
+                    let name = args
+                        .get_one::<String>("name")
+                        .map(|s| s.as_str())
+                        .expect("No name!");
+
+                    playlists::remove(String::from(name));
+                }
+                ("remove_file", args) => {
+                    let name = args
+                        .get_one::<String>("name")
+                        .map(|s| s.as_str())
+                        .expect("No name!");
+                    let file = args
+                        .get_one::<String>("file")
+                        .map(|s| s.as_str())
+                        .expect("No file!");
+
+                    playlists::remove_file(String::from(name), String::from(file));
+                }
+                ("list", _) => {
+                    playlists::list();
+                }
+                ("files", args) => {
+                    let name = args
+                        .get_one::<String>("name")
+                        .map(|s| s.as_str())
+                        .expect("No name!");
+
+                    playlists::files(String::from(name));
+                }
+                _ => todo!("idk"),
+            }
         }
         Some(("player", sub_matches)) => {
             let operation = sub_matches.subcommand().unwrap_or(("help", sub_matches));

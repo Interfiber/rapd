@@ -279,7 +279,6 @@ impl RapdCommand for GetFilesInPlaylistCommand {
 
 impl RapdCommand for RemovePlaylistCommand {
     fn execute(&self, msg: RapdMessage) -> RapdCommandResponse {
-        info!("{:#?}", msg);
         if msg.params.len() == 1 {
             let name = &msg.params[0];
 
@@ -288,7 +287,6 @@ impl RapdCommand for RemovePlaylistCommand {
             info!("Removed playlist: {}", name);
             RapdCommandResponse::new(json!("Removed playlist"), false)
         } else {
-            error!("Not enough params!");
             RapdCommandResponse::new(json!("This command takes one param: NAME"), true)
         }
     }
