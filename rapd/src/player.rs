@@ -267,6 +267,8 @@ impl RapdPlayer {
                         _ => error!("Got unknown param for log command"),
                     }
                 } else if cmd[0] == "play_file" {
+                    // BUG: If the player is already paused, the server will enter a deadlock,
+                    // preventing audio from being played
                     self.play_file(
                         &params[0].replace("\\COMMA", ","),
                         params[1].parse::<bool>().unwrap(),
