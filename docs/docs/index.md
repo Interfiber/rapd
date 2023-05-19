@@ -22,7 +22,7 @@
 <section class="fusion-home-float">
     <h2>Low resource usage</h2>
     <p>
-      RAPD is built in rust for speed, and saftey. Also since RAPD does not run a fancy
+      RAPD is built in rust for speed, and safety. Also since RAPD does not run a fancy
       user interface it can run with low CPU, and memory use in the background.
     </p>
 </section>
