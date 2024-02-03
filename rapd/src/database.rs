@@ -227,6 +227,12 @@ pub fn rebuild_db() {
 
     let paths = std::fs::read_dir(music_dir).unwrap();
 
+    let permitted_exts = [
+        String::from("mp3"),
+        String::from("flac"),
+        String::from("ogg"),
+    ];
+
     for path in paths {
         let file = path.unwrap().path();
         let ext = file
@@ -236,7 +242,7 @@ pub fn rebuild_db() {
             .unwrap()
             .to_string();
 
-        if !file.is_dir() && ext == "mp3" {
+        if !file.is_dir() && permitted_exts.contains(&ext) {
             let path_name = file.as_os_str().to_str().unwrap().to_string();
 
             DATABASE.lock().add_file(path_name);

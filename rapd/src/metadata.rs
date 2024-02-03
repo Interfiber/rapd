@@ -61,12 +61,13 @@ impl RapdMetadata {
         let duration = properties.duration();
 
         trace!("Getting primary tag");
-        let tag = match tagged_file.primary_tag() {
-            Some(primary_tag) => primary_tag,
-            None => tagged_file
-                .first_tag()
-                .expect("Failed to get first metadata tag for file"),
-        };
+        let tag_wrapped = tagged_file.primary_tag();
+
+        if tag_wrapped.is_none() {
+            return;
+        }
+
+        let tag = tag_wrapped.unwrap();
 
         trace!("Updating metadata");
 
