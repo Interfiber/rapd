@@ -231,6 +231,7 @@ pub fn rebuild_db() {
         String::from("mp3"),
         String::from("flac"),
         String::from("ogg"),
+        String::from("m4a")
     ];
 
     for path in paths {

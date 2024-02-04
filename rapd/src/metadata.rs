@@ -96,7 +96,7 @@ impl RapdMetadata {
 
             let album_art_file = format!(
                 "{}/{}_{}_{}.{}",
-                album_art_dir, self.title, self.artist, self.album, ext
+                album_art_dir, self.title.replace("/", "_"), self.artist.replace("/", "_"), self.album.replace("/", "_"), ext
             );
 
             trace!("Checking for file: {}", album_art_file);
